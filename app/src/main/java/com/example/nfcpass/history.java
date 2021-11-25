@@ -47,7 +47,7 @@ public class history extends AppCompatActivity {
     long time;
     ListView listview;
     ArrayList<String> timelist = new ArrayList<>(); // time
-    ArrayList<String> list = new ArrayList<>(); // name
+    ArrayList<String> namelist = new ArrayList<>(); // name
     ArrayList<String> phlist = new ArrayList<>(); // ph
     Dialog dialog;
     String shopinfo;
@@ -80,9 +80,9 @@ public class history extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 for(QueryDocumentSnapshot doc : task.getResult()){
-                    list.add(doc.getId().substring(0,3));
+                    namelist.add(doc.getId().substring(0,3));
                 }
-                ArrayAdapter adapter = new ArrayAdapter(history.this, android.R.layout.simple_list_item_1, list);
+                ArrayAdapter adapter = new ArrayAdapter(history.this, android.R.layout.simple_list_item_1, namelist);
                 listview.setAdapter(adapter);
             }
         });
@@ -95,9 +95,9 @@ public class history extends AppCompatActivity {
             }
         });
 
-        int size = list.size();
+        int size = namelist.size();
         for(int i =0; i < size; i++) {
-            db.collection("사업장").document(shopinfo).collection(today).document(list.get(i).toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            db.collection("사업장").document(shopinfo).collection(today).document(namelist.get(i).toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     Map<String, Object> map = new HashMap<>();
@@ -121,13 +121,13 @@ public class history extends AppCompatActivity {
         TextView time = dialog.findViewById(R.id.time);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("사업장").document(shopinfo).collection(today).document(list.get(num).toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        db.collection("사업장").document(shopinfo).collection(today).document(namelist.get(num).toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 Map<String,Object> map = new HashMap<>();
                 map = task.getResult().getData();
 
-                name.setText(list.get(num).substring(0,3));
+                name.setText(namelist.get(num).substring(0,3));
                 time.setText(map.get("입장시간").toString());
                 ph.setText(map.get("전화번호").toString());
             }
@@ -157,19 +157,21 @@ public class history extends AppCompatActivity {
         cell = row.createCell(2);
         cell.setCellValue("전화번호");
 
-        for(int i=0; i<list.size();i++ ){
+        int namelistsize = namelist.size();
+
+        for(int i=0; i<namelistsize;i++ ){
             row = sheet.createRow(i+1);
             cell = row.createCell(0);
-            cell.setCellValue(list.get(1).substring(0,3));//시간값
+            cell.setCellValue(timelist.get(i));//시간값
 
             cell=row.createCell(1);
-            cell.setCellValue(list.get(i).substring(0,3)); //이름
+            cell.setCellValue(namelist.get(i).substring(0,3)); //이름
 
             cell=row.createCell(2);
-            cell.setCellValue(list.get(i).getPhonenum()); //전화번호
+            cell.setCellValue(phlist.get(i)); //전화번호
         }
 
-        File xlsFile = new File(getExternalFilesDir(null), "test.xls");
+        File xlsFile = new File(getExternalFilesDir(null), "History.xls");
         try{
             FileOutputStream os = new FileOutputStream(xlsFile);
             workbook.write(os);
