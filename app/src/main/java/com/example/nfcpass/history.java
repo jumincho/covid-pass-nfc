@@ -4,9 +4,11 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +53,7 @@ public class history extends AppCompatActivity {
     ArrayList<String> phlist = new ArrayList<>(); // ph
     Dialog dialog;
     String shopinfo;
+    ImageButton excel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,7 @@ public class history extends AppCompatActivity {
 
         date = findViewById(R.id.date);
         listview = findViewById(R.id.list);
+        excel = findViewById(R.id.creat_excel);
 
         time = System.currentTimeMillis();
         day = new Date(time);
@@ -92,6 +96,14 @@ public class history extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 showDialog01(i);
+            }
+        });
+
+
+        excel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveExcel();
             }
         });
 
@@ -171,7 +183,9 @@ public class history extends AppCompatActivity {
             cell.setCellValue(phlist.get(i)); //전화번호
         }
 
-        File xlsFile = new File(getExternalFilesDir(null), "History.xls");
+        String filename = "History.xls";
+        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+        File xlsFile = new File(dir, filename);
         try{
             FileOutputStream os = new FileOutputStream(xlsFile);
             workbook.write(os);
