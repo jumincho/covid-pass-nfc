@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1001222693243",
+    "project_id": "nfc-pass",
+    "storage_bucket": "nfc-pass.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1001222693243:android:b5a99b5618f683248d5dde",
+        "android_client_info": {
+          "package_name": "com.example.nfcpass"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1001222693243-d6mpo69cg0544806dbi6k402ida00g6p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgyb5j0Ntm6Z4HgTa6nFWyKRdVAZudNPY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1001222693243-d6mpo69cg0544806dbi6k402ida00g6p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
