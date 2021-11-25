@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_gravity="center"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:gravity="center"
+        android:background="@drawable/user_info_back"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/shop_info_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmsansmid"
+            android:layout_marginBottom="5dp"
+            android:textSize="20dp"
+            android:text="사업장 정보입력" />
+
+        <EditText
+            android:id="@+id/shop_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmsansmid"
+            android:textSize="20dp"
+            android:hint="사업자번호+사업자이름"
+            android:layout_marginBottom="20dp"
+            android:singleLine="true"
+            android:background="@drawable/button_line"
+            />
+
+        <TextView
+            android:id="@+id/check_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmsansmid"
+            android:textSize="20dp"
+            android:layout_marginBottom="5dp"
+            android:text="조사관 코드" />
+
+        <EditText
+            android:id="@+id/check_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:fontFamily="@font/gmsansmid"
+            android:textSize="20dp"
+            android:layout_marginBottom="20dp"
+            android:hint="조사관 코드를 입력해주세요."
+            android:singleLine="true"
+            android:background="@drawable/button_line"
+            />
+
+        <Button
+            android:id="@+id/go_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_line"
+            android:fontFamily="@font/gmsansmid"
+            android:text="확인" />
+    </LinearLayout>
+</LinearLayout>

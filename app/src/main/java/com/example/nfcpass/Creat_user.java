@@ -1,17 +1,31 @@
 package com.example.nfcpass;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Creat_user extends AppCompatActivity {
 
     Button go_shop,go_user,go_history;
+    Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,13 +36,13 @@ public class Creat_user extends AppCompatActivity {
         go_shop = (Button) findViewById(R.id.go_shop);
         go_history = findViewById(R.id.go_history);
 
+        dialog = new Dialog(Creat_user.this);
+        dialog.setContentView(R.layout.user_info_pass);
+
         go_history.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Creat_user.this,history.class);
-                startActivity(intent);
-                overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
-                finish();
+                showDialog01();
             }
         });
 
@@ -106,6 +120,34 @@ public class Creat_user extends AppCompatActivity {
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
         }
+
+    }
+
+    public void showDialog01() {
+
+        dialog.show();
+
+        EditText shop_info = dialog.findViewById(R.id.shop_info);
+        EditText check_code = dialog.findViewById(R.id.check_code);
+        Button go_list = dialog.findViewById(R.id.go_list);
+
+
+        go_list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(check_code.getText().toString().equals("112255")){
+                    Intent intent = new Intent(Creat_user.this,history.class);
+                    intent.putExtra("정보",shop_info.getText().toString());
+                    startActivity(intent);
+                    overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                    finish();
+                }
+                else{
+                    Toast.makeText(Creat_user.this,"올바른 조사관 코드를 입력해주세요.",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
 
     }
 }
