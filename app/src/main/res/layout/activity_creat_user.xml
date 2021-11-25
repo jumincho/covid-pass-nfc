@@ -43,6 +43,18 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/button_line"
         android:text="이용자 ( 입장용 )" />
+
+    <Button
+        android:id="@+id/go_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/button_line"
+        android:text="역학조사용" />
+
+
 </LinearLayout>

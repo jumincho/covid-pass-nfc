@@ -11,7 +11,7 @@ import android.widget.Button;
 
 public class Creat_user extends AppCompatActivity {
 
-    Button go_shop,go_user;
+    Button go_shop,go_user,go_history;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +20,17 @@ public class Creat_user extends AppCompatActivity {
 
         go_user = (Button) findViewById(R.id.go_user);
         go_shop = (Button) findViewById(R.id.go_shop);
+        go_history = findViewById(R.id.go_history);
+
+        go_history.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Creat_user.this,history.class);
+                startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                finish();
+            }
+        });
 
 
         go_user.setOnClickListener(new View.OnClickListener() {
