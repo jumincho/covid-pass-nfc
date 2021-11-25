@@ -1,19 +1,18 @@
 package com.example.nfcpass;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,16 +22,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,12 +37,10 @@ public class history extends AppCompatActivity {
     String today;
     long time;
     ListView listview;
-    ArrayList<String> timelist = new ArrayList<>(); // time
-    ArrayList<String> namelist = new ArrayList<>(); // name
-    ArrayList<String> phlist = new ArrayList<>(); // ph
+    public static ArrayList<String> namelist = new ArrayList<>(); // name
     Dialog dialog;
     String shopinfo;
-    ImageButton excel;
+    TextView total;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +54,9 @@ public class history extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
         date = findViewById(R.id.date);
         listview = findViewById(R.id.list);
-        excel = findViewById(R.id.creat_excel);
+        total = findViewById(R.id.total);
 
         time = System.currentTimeMillis();
         day = new Date(time);
@@ -83,13 +69,17 @@ public class history extends AppCompatActivity {
         db.collection("사업장").document(shopinfo).collection(today).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for(QueryDocumentSnapshot doc : task.getResult()){
-                    namelist.add(doc.getId().substring(0,3));
+                for (QueryDocumentSnapshot doc : task.getResult()) {
+
+                    namelist.add(doc.getId().substring(0, 3));
+                    total.setText("총 입장 인원 : " + namelist.size() + " 명");
                 }
                 ArrayAdapter adapter = new ArrayAdapter(history.this, android.R.layout.simple_list_item_1, namelist);
                 listview.setAdapter(adapter);
             }
         });
+
+
 
         dialog.setContentView(R.layout.user_info);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -98,30 +88,6 @@ public class history extends AppCompatActivity {
                 showDialog01(i);
             }
         });
-
-
-        excel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveExcel();
-            }
-        });
-
-        int size = namelist.size();
-        for(int i =0; i < size; i++) {
-            db.collection("사업장").document(shopinfo).collection(today).document(namelist.get(i).toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    Map<String, Object> map = new HashMap<>();
-                    map = task.getResult().getData();
-
-
-                    timelist.add(map.get("입장시간").toString());
-                    phlist.add(map.get("전화번호").toString());
-                }
-            });
-        }
-
 
 
     }
@@ -136,10 +102,10 @@ public class history extends AppCompatActivity {
         db.collection("사업장").document(shopinfo).collection(today).document(namelist.get(num).toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                Map<String,Object> map = new HashMap<>();
+                Map<String, Object> map = new HashMap<>();
                 map = task.getResult().getData();
 
-                name.setText(namelist.get(num).substring(0,3));
+                name.setText(namelist.get(num).substring(0, 3));
                 time.setText(map.get("입장시간").toString());
                 ph.setText(map.get("전화번호").toString());
             }
@@ -147,60 +113,6 @@ public class history extends AppCompatActivity {
 
 
         dialog.show();
-    }
-
-
-
-    private void saveExcel(){
-
-        Workbook workbook = new HSSFWorkbook();
-
-        Sheet sheet = workbook.createSheet();//새로운 시트생성
-
-        Row row = sheet.createRow(0); // 새로운 행 생성
-        Cell cell;
-
-        cell = row.createCell(0); //1번 셀 생성
-        cell.setCellValue("시간"); // 1번 셀 값 입력
-
-        cell = row.createCell(1);
-        cell.setCellValue("이름");
-
-        cell = row.createCell(2);
-        cell.setCellValue("전화번호");
-
-        int namelistsize = namelist.size();
-
-        for(int i=0; i<namelistsize;i++ ){
-            row = sheet.createRow(i+1);
-            cell = row.createCell(0);
-            cell.setCellValue(timelist.get(i));//시간값
-
-            cell=row.createCell(1);
-            cell.setCellValue(namelist.get(i).substring(0,3)); //이름
-
-            cell=row.createCell(2);
-            cell.setCellValue(phlist.get(i)); //전화번호
-        }
-
-        String filename = "History.xls";
-        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-        File xlsFile = new File(dir, filename);
-        try{
-            FileOutputStream os = new FileOutputStream(xlsFile);
-            workbook.write(os);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Toast.makeText(getApplicationContext(),xlsFile.getAbsolutePath()+"에 저장되었습니다",Toast.LENGTH_SHORT).show();
-
-        Uri path = Uri.fromFile(xlsFile);
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("application/excel");
-        shareIntent.putExtra(Intent.EXTRA_STREAM,path);
-        startActivity(Intent.createChooser(shareIntent,"엑셀내보내기기"));
     }
 
 
@@ -221,6 +133,41 @@ public class history extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
+
+    }
+
+    private long backKeyPressedTime = 0;
+
+    //뒤로 가기 키를 누르면 입력을 종료 시킨다.
+    @Override
+    public void onBackPressed() {
+
+        if (System.currentTimeMillis() > backKeyPressedTime + 500) {
+            backKeyPressedTime = System.currentTimeMillis();
+            return;
+        }
+
+        if (System.currentTimeMillis() <= backKeyPressedTime + 500) {
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setTitle("종료").setMessage("종료 하시겠습니까?");
+            AlertDialog.Builder builder1 = builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finishAndRemoveTask();
+                }
+            });
+
+            builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
 
     }
 

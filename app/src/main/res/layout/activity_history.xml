@@ -8,14 +8,6 @@
     android:background="@drawable/cv_check_lay"
     tools:context=".history">
 
-    <ImageButton
-        android:id="@+id/creat_excel"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_gravity="right"
-        android:background="@android:color/transparent"
-        android:src="@drawable/ic_baseline_save_alt_24" />
-
     <TextView
         android:id="@+id/go_history_title"
         android:layout_width="match_parent"
@@ -57,6 +49,17 @@
         android:background="@color/white"
         android:layout_marginBottom="10dp"
         />
+
+    <TextView
+        android:id="@+id/total"
+        android:layout_gravity="right"
+        android:gravity="right"
+        android:textColor="@color/white"
+        android:fontFamily="@font/gmsansmid"
+        android:textSize="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="총 입장 인원 : 0" />
 
     <LinearLayout
         android:layout_width="match_parent"
