@@ -46,7 +46,9 @@ public class history extends AppCompatActivity {
     String today;
     long time;
     ListView listview;
-    ArrayList<String> list = new ArrayList<>();
+    ArrayList<String> timelist = new ArrayList<>(); // time
+    ArrayList<String> list = new ArrayList<>(); // name
+    ArrayList<String> phlist = new ArrayList<>(); // ph
     Dialog dialog;
     String shopinfo;
 
@@ -93,6 +95,21 @@ public class history extends AppCompatActivity {
             }
         });
 
+        int size = list.size();
+        for(int i =0; i < size; i++) {
+            db.collection("사업장").document(shopinfo).collection(today).document(list.get(i).toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    Map<String, Object> map = new HashMap<>();
+                    map = task.getResult().getData();
+
+
+                    timelist.add(map.get("입장시간").toString());
+                    phlist.add(map.get("전화번호").toString());
+                }
+            });
+        }
+
 
 
     }
@@ -115,12 +132,6 @@ public class history extends AppCompatActivity {
                 ph.setText(map.get("전화번호").toString());
             }
         });
-
-
-
-
-
-
 
 
         dialog.show();
