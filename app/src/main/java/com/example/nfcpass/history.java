@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -38,6 +39,7 @@ public class history extends AppCompatActivity {
     long time;
     ListView listview;
     public static ArrayList<String> namelist = new ArrayList<>(); // name
+    public static ArrayList<String> namelist2 = new ArrayList<>(); // name
     Dialog dialog;
     String shopinfo;
     TextView total;
@@ -65,13 +67,15 @@ public class history extends AppCompatActivity {
 
         dialog = new Dialog(history.this);
 
+        namelist.clear();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("사업장").document(shopinfo).collection(today).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 for (QueryDocumentSnapshot doc : task.getResult()) {
 
-                    namelist.add(doc.getId().substring(0, 3));
+                    namelist2.add(doc.getId().toString());
+                    namelist.add(doc.getId().toString().substring(0,3));
                     total.setText("총 입장 인원 : " + namelist.size() + " 명");
                 }
                 ArrayAdapter adapter = new ArrayAdapter(history.this, android.R.layout.simple_list_item_1, namelist);
@@ -98,15 +102,16 @@ public class history extends AppCompatActivity {
         TextView ph = dialog.findViewById(R.id.phone);
         TextView time = dialog.findViewById(R.id.time);
 
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("사업장").document(shopinfo).collection(today).document(namelist.get(num).toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        db.collection("사업장").document(shopinfo).collection(today).document(namelist2.get(num).toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 Map<String, Object> map = new HashMap<>();
                 map = task.getResult().getData();
 
                 name.setText(namelist.get(num).substring(0, 3));
-                time.setText(map.get("입장시간").toString());
+                time.setText(map.get("시간").toString());
                 ph.setText(map.get("전화번호").toString());
             }
         });
