@@ -1,7 +1,7 @@
 # 2021 컴퓨터공학부 작품경진대회
 > 대회 기간 : 2021 / 11 / 26<br>
 > 이 페이지는 PC버전에 최적화되어있습니다.<br>
-> 이 프로젝트의 이미지 파일과 Firebase DB는 저작권 및 보안상 제거한 상태입니다.<br>
+> 이 프로젝트의 이미지 파일 및 폰트와 Firebase DB는 저작권 및 보안상 제거한 상태입니다.<br>
 
 ## 프로젝트명 : CV-PASS
 
@@ -26,6 +26,7 @@
 - 신속한 역학조사 < 역학조사관용 모드를 만들어 해당 가게의 입출입 명부를 바로 확인 가능 >
 
 # 영상
+- 링크 : https://www.youtube.com/watch?v=LHE4dr8aTKQ&list=PLFAjt9goCKzyHfSKoV9AnDuxl1U9w1mLL&index=13
 
  
 ## 주요 기능 이미지
