@@ -28,6 +28,10 @@
 # 영상
 - 링크 : https://www.youtube.com/watch?v=LHE4dr8aTKQ&list=PLFAjt9goCKzyHfSKoV9AnDuxl1U9w1mLL&index=13
 
+## 주요 기능
+- NFC 태그를 통한 간단 출입명부 등록
+- 백신 접종 인증서 AI를 통한 진위 여부 판단
+- 사업자 정보 Open API를 활용하여 진위 여부 판단
  
 ## 주요 기능 이미지
  
