@@ -9,33 +9,35 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class RequestHttpURLConnection {
 
     public String request(String _url, String jsonData){
+        HttpURLConnection con = null;
         try{
             URL url = new URL(_url);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con = (HttpURLConnection) url.openConnection();
 
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "application/json");
             con.setRequestProperty("accept", "application/json");
             con.setDoOutput(true);
-            String jsonString = jsonData;
 
-            OutputStream os = con.getOutputStream();
-            byte[] input = jsonString.getBytes("utf-8");
-            os.write(input, 0, input.length);
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
-            StringBuilder response = new StringBuilder();
-
-            String responseLine = null;
-            while ((responseLine = reader.readLine()) != null) {
-                response.append(responseLine.trim());
+            try (OutputStream os = con.getOutputStream()) {
+                byte[] input = jsonData.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
             }
 
-            return response.toString();
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
+                StringBuilder response = new StringBuilder();
+                String responseLine;
+                while ((responseLine = reader.readLine()) != null) {
+                    response.append(responseLine.trim());
+                }
+                return response.toString();
+            }
 
         } catch (ProtocolException e) {
             e.printStackTrace();
@@ -43,6 +45,10 @@ public class RequestHttpURLConnection {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (con != null) {
+                con.disconnect();
+            }
         }
         return null;
 

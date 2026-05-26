@@ -57,13 +57,13 @@ public class Check_user_doc extends AppCompatActivity {
     private static final int MAX_LABEL_RESULTS = 10;
     private static final int MAX_DIMENSION = 1200;
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = Check_user_doc.class.getSimpleName();
     private static final int GALLERY_PERMISSIONS_REQUEST = 0;
     private static final int GALLERY_IMAGE_REQUEST = 1;
     public static final int CAMERA_PERMISSIONS_REQUEST = 2;
     public static final int CAMERA_IMAGE_REQUEST = 3;
-    private static Context context;
-    private static TextView noti;
+    private Context context;
+    private TextView noti;
     ProgressDialog dialog2;
 
     ImageView mMainImage;
@@ -327,22 +327,35 @@ public class Check_user_doc extends AppCompatActivity {
         if (labels != null) {
             for (EntityAnnotation label : labels) {
                 cnt++;
-                if(label.getDescription().equals("1")||label.getDescription().equals("2")){ // 접종 횟수 여부
-                    if(labels.get(cnt).getDescription().equals("차")){
-                        Vtry = label.getDescription() + labels.get(cnt).getDescription();
+                String desc = label.getDescription();
+                if (desc == null) continue;
+                if(desc.equals("1")||desc.equals("2")){ // 접종 횟수 여부
+                    if(cnt < labels.size() && "차".equals(labels.get(cnt).getDescription())){
+                        Vtry = desc + labels.get(cnt).getDescription();
                     }
                 }
-                else if(label.getDescription().equals("추가")){ //부스터샷 추가접종 여부
-                    if(labels.get(cnt).getDescription().equals("접종")){
-                        Vtry = label.getDescription() + labels.get(cnt).getDescription();
+                else if(desc.equals("추가")){ //부스터샷 추가접종 여부
+                    if(cnt < labels.size() && "접종".equals(labels.get(cnt).getDescription())){
+                        Vtry = desc + labels.get(cnt).getDescription();
                     }
                 }
-                else if(label.getDescription().equals("일자")){
-                    Vday = labels.get(cnt).getDescription().substring(0,labels.get(cnt).getDescription().length()-1); //1차접종시 및 부스터샷
-                    if(Vday.equals("접")){//2차 접종시
-                        Vday = labels.get(cnt+2).getDescription().substring(0,labels.get(cnt+2).getDescription().length()-1);
-                        if(Vday.equals("1")){//2차 접종 후 14일 경과시
-                            Vday = labels.get(cnt+5).getDescription().substring(0,labels.get(cnt+5).getDescription().length()-1);
+                else if(desc.equals("일자")){
+                    if (cnt < labels.size()) {
+                        String d = labels.get(cnt).getDescription();
+                        if (d != null && d.length() > 0) {
+                            Vday = d.substring(0, d.length() - 1); //1차접종시 및 부스터샷
+                            if(Vday.equals("접") && cnt + 2 < labels.size()){//2차 접종시
+                                String d2 = labels.get(cnt + 2).getDescription();
+                                if (d2 != null && d2.length() > 0) {
+                                    Vday = d2.substring(0, d2.length() - 1);
+                                    if(Vday.equals("1") && cnt + 5 < labels.size()){//2차 접종 후 14일 경과시
+                                        String d3 = labels.get(cnt + 5).getDescription();
+                                        if (d3 != null && d3.length() > 0) {
+                                            Vday = d3.substring(0, d3.length() - 1);
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
 

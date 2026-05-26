@@ -74,11 +74,25 @@ cv_pass/
 > Firebase `google-services.json`, Cloud Vision API 키가 제거되어 있습니다.
 > 직접 빌드하려면 자신의 Firebase 프로젝트와 API 키를 채워 넣어야 합니다.
 
+## 보안 주의사항
+
+- 이전 머지된 커밋에 **Cloud Vision API 키**(`AIzaSyAXpv-...`)와 Firebase API 키가
+  소스 코드에 평문으로 노출되어 있었습니다. Git 히스토리에 그대로 남아 있으므로,
+  **GCP 콘솔에서 즉시 키를 회전(rotate)** 해 주세요.
+- 현재 빌드 시스템은 `local.properties`의 `VISION_API_KEY` 값을 읽어
+  `BuildConfig.API_KEY`로 주입합니다. 키 문자열은 더 이상 소스에 포함되지 않습니다.
+- `local.properties`는 `.gitignore`에 포함되어 있어 커밋되지 않습니다.
+- `google-services.json`은 본인의 Firebase 프로젝트 콘솔에서 직접 받아
+  `app/` 디렉터리에 배치하세요. 다른 사람의 파일을 그대로 사용하지 마십시오.
+
 ## 빌드 방법
 
 1. Android Studio (Arctic Fox 이상)로 프로젝트 열기
 2. `app/google-services.json`에 본인 Firebase 프로젝트 설정 파일 배치
-3. `app/build.gradle`의 `API_KEY`를 본인 Google Cloud Vision API 키로 교체
+3. 프로젝트 루트의 `local.properties`에 다음 줄을 추가
+   ```properties
+   VISION_API_KEY=여기에_본인의_Cloud_Vision_API_KEY
+   ```
 4. Gradle Sync 후 `Run 'app'`
 
 ```bash

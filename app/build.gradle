@@ -3,6 +3,13 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+def localProps = new Properties()
+def localPropsFile = rootProject.file('local.properties')
+if (localPropsFile.exists()) {
+    localProps.load(new FileInputStream(localPropsFile))
+}
+def visionKey = localProps.getProperty('VISION_API_KEY', '')
+
 android {
     compileSdk 31
 
@@ -34,7 +41,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         buildTypes.each {
-            it.buildConfigField 'String', 'API_KEY', '"AIzaSyAXpv-1de-flR2eZg05xBjl_CpWV-ZcpRQ"'
+            it.buildConfigField 'String', 'API_KEY', "\"${visionKey}\""
         }
     }
     compileOptions {
@@ -49,8 +56,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-    implementation files('libs\\jsoup-1.14.3.jar')
-    implementation 'com.google.firebase:firebase-crashlytics-buildtools:2.8.0'
+    implementation files('libs/jsoup-1.14.3.jar')
+    implementation 'com.google.guava:guava:31.1-android'
     implementation 'com.google.firebase:firebase-firestore:24.0.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
@@ -59,5 +66,8 @@ dependencies {
     implementation ('com.google.apis:google-api-services-vision:v1-rev369-1.23.0'){
         exclude group:'com.google.guava'
     }
-    implementation ('com.google.api-client:google-api-client-android:1.23.0'){ exclude module: 'httpclient' exclude group: 'com.google.guava'}
+    implementation ('com.google.api-client:google-api-client-android:1.23.0'){
+        exclude module: 'httpclient'
+        exclude group: 'com.google.guava'
+    }
 }

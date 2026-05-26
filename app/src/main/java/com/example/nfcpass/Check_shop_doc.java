@@ -91,8 +91,12 @@ public class Check_shop_doc extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
+            if (s == null) {
+                Toast.makeText(Check_shop_doc.this,"확인할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
             DataParser dataParser = new DataParser(s);
-            if(dataParser.getValid().equals("02")){
+            if("02".equals(dataParser.getValid())){
                 Toast.makeText(Check_shop_doc.this,"확인할 수 없습니다.", Toast.LENGTH_SHORT).show();
             }else {
                 resultName = dataParser.getName();

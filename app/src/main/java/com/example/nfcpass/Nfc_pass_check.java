@@ -53,7 +53,7 @@ public class Nfc_pass_check extends Activity {
     LinearLayout shop_mode,user_mode;
     long timenow,todaynow;
     Date mtime,mtoday;
-    SimpleDateFormat mtimeformat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    SimpleDateFormat mtimeformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     SimpleDateFormat todaynowformat = new SimpleDateFormat("yyyy-MM-dd");
     String time,todaytime;
     Long number;
@@ -99,11 +99,15 @@ public class Nfc_pass_check extends Activity {
             user_mode.setVisibility(View.GONE);
             shop_name = intent.getStringExtra("사업자이름");
             shop_num = intent.getStringExtra("사업자번호");
+            if (shop_name == null) shop_name = "";
+            if (shop_num == null) shop_num = "";
         } else if (check.equals("2")) { // 사용자 실행 모드
             shop_mode.setVisibility(View.GONE);
             user_mode.setVisibility(View.VISIBLE);
             Vtry = intent.getStringExtra("백신");
             Vday = intent.getStringExtra("인증");
+            if (Vtry == null) Vtry = "";
+            if (Vday == null) Vday = "";
             va_count.setText(Vtry);
             user_check_day.setText(Vday);
 
@@ -116,6 +120,8 @@ public class Nfc_pass_check extends Activity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            if (Vtry == null) Vtry = "";
+            if (Vday == null) Vday = "";
             va_count.setText(Vtry);
             user_check_day.setText(Vday);
         }
@@ -154,7 +160,7 @@ public class Nfc_pass_check extends Activity {
         readFromIntent(getIntent());
 
 
-        pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+        pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), PendingIntent.FLAG_MUTABLE);
         IntentFilter tagDetected = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
         tagDetected.addCategory(Intent.CATEGORY_DEFAULT);
         writeTagFilters = new IntentFilter[] { tagDetected };
@@ -203,7 +209,7 @@ public class Nfc_pass_check extends Activity {
         String text = "";
         byte[] payload = msgs[0].getRecords()[0].getPayload();
         String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
-        int languageCodeLength = payload[0] & 0063;
+        int languageCodeLength = payload[0] & 0x3F;
 
         try {
             // 받아온 Tag 값
@@ -297,10 +303,12 @@ public class Nfc_pass_check extends Activity {
     }
 
     private void WriteModeOn(){
+        if (nfcAdapter == null) return;
         writeMode = true;
         nfcAdapter.enableForegroundDispatch(this, pendingIntent, writeTagFilters, null);
     }
     private void WriteModeOff(){
+        if (nfcAdapter == null) return;
         writeMode = false;
         nfcAdapter.disableForegroundDispatch(this);
     }
@@ -347,10 +355,14 @@ public class Nfc_pass_check extends Activity {
                         vibrator.cancel();
                         break;
                     }
+                    Thread.sleep(200);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (FormatException e) {
                     e.printStackTrace();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
                 }
             }
         }

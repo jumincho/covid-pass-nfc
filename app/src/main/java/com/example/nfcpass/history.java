@@ -72,10 +72,15 @@ public class history extends AppCompatActivity {
         db.collection("사업장").document(shopinfo).collection(today).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (!task.isSuccessful() || task.getResult() == null) {
+                    return;
+                }
                 for (QueryDocumentSnapshot doc : task.getResult()) {
 
-                    namelist2.add(doc.getId().toString());
-                    namelist.add(doc.getId().toString().substring(0,3));
+                    String id = doc.getId();
+                    if (id == null) continue;
+                    namelist2.add(id);
+                    namelist.add(id.length() >= 3 ? id.substring(0, 3) : id);
                     total.setText("총 입장 인원 : " + namelist.size() + " 명");
                 }
                 ArrayAdapter adapter = new ArrayAdapter(history.this, android.R.layout.simple_list_item_1, namelist);
@@ -107,12 +112,20 @@ public class history extends AppCompatActivity {
         db.collection("사업장").document(shopinfo).collection(today).document(namelist2.get(num).toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                Map<String, Object> map = new HashMap<>();
-                map = task.getResult().getData();
+                if (!task.isSuccessful() || task.getResult() == null) {
+                    return;
+                }
+                Map<String, Object> map = task.getResult().getData();
+                if (map == null) {
+                    return;
+                }
 
-                name.setText(namelist.get(num).substring(0, 3));
-                time.setText(map.get("시간").toString());
-                ph.setText(map.get("전화번호").toString());
+                String entry = namelist.get(num);
+                name.setText(entry != null && entry.length() >= 3 ? entry.substring(0, 3) : entry);
+                Object timeObj = map.get("시간");
+                if (timeObj != null) time.setText(timeObj.toString());
+                Object phObj = map.get("전화번호");
+                if (phObj != null) ph.setText(phObj.toString());
             }
         });
 
