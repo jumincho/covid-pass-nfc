@@ -11,6 +11,7 @@ app/build/
 # Local config & secrets
 local.properties
 /local.properties
+app/google-services.json
 
 # OS / misc
 .DS_Store

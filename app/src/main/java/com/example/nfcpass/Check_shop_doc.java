@@ -49,7 +49,8 @@ public class Check_shop_doc extends AppCompatActivity {
                 }else {
 
 
-                    String url = "https://api.odcloud.kr/api/nts-businessman/v1/validate?serviceKey=EEA0ZjjFdim30KlXr7%2FroJJf6LBMusuAISvO9ET5leSjtUIivRhW%2F4g%2FOJlqTXSodVTOQKY8BN%2B05S9qRzpRjg%3D%3D";
+                    String url = "https://api.odcloud.kr/api/nts-businessman/v1/validate?serviceKey="
+                            + com.example.nfcpass.BuildConfig.BUSINESS_API_KEY;
                     String jsonData = "{  \"businesses\": [    {      \"b_no\": \""
                             + numberData + "\",      \"start_dt\": \""
                             + dateData + "\",      \"p_nm\": \""

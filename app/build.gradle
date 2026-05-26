@@ -8,7 +8,9 @@ def localPropsFile = rootProject.file('local.properties')
 if (localPropsFile.exists()) {
     localProps.load(new FileInputStream(localPropsFile))
 }
-def visionKey = localProps.getProperty('VISION_API_KEY', '')
+def visionKey      = localProps.getProperty('VISION_API_KEY', '')
+def businessKey    = localProps.getProperty('BUSINESS_API_KEY', '')
+def inspectorCode  = localProps.getProperty('INSPECTOR_CODE', '')
 
 android {
     compileSdk 31
@@ -41,7 +43,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         buildTypes.each {
-            it.buildConfigField 'String', 'API_KEY', "\"${visionKey}\""
+            it.buildConfigField 'String', 'API_KEY',         "\"${visionKey}\""
+            it.buildConfigField 'String', 'BUSINESS_API_KEY', "\"${businessKey}\""
+            it.buildConfigField 'String', 'INSPECTOR_CODE',   "\"${inspectorCode}\""
         }
     }
     compileOptions {

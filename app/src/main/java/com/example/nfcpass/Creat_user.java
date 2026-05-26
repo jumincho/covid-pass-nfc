@@ -126,7 +126,7 @@ public class Creat_user extends AppCompatActivity {
         go_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(check_code.getText().toString().equals("112255")){
+                if(check_code.getText().toString().equals(com.example.nfcpass.BuildConfig.INSPECTOR_CODE)){
                     Intent intent = new Intent(Creat_user.this,history.class);
                     intent.putExtra("정보",shop_info.getText().toString());
                     startActivity(intent);

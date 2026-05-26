@@ -76,22 +76,40 @@ cv_pass/
 
 ## 보안 주의사항
 
-- 이전 머지된 커밋에 **Cloud Vision API 키**(`AIzaSyAXpv-...`)와 Firebase API 키가
-  소스 코드에 평문으로 노출되어 있었습니다. Git 히스토리에 그대로 남아 있으므로,
-  **GCP 콘솔에서 즉시 키를 회전(rotate)** 해 주세요.
-- 현재 빌드 시스템은 `local.properties`의 `VISION_API_KEY` 값을 읽어
-  `BuildConfig.API_KEY`로 주입합니다. 키 문자열은 더 이상 소스에 포함되지 않습니다.
-- `local.properties`는 `.gitignore`에 포함되어 있어 커밋되지 않습니다.
-- `google-services.json`은 본인의 Firebase 프로젝트 콘솔에서 직접 받아
-  `app/` 디렉터리에 배치하세요. 다른 사람의 파일을 그대로 사용하지 마십시오.
+> [!IMPORTANT]
+> **이전 머지된 커밋의 git history 에 다음 4개 시크릿이 평문으로 노출되었습니다.**
+> 모두 즉시 발급 기관에서 회전(rotate)·재발급해 주세요. 본 PR 의 소스 코드에서는
+> 모두 placeholder / `BuildConfig` 로 가렸지만, 과거 커밋에는 그대로 남아 있습니다.
+>
+> | 시크릿 | 노출된 값 (prefix) | 발급 기관 |
+> | --- | --- | --- |
+> | Cloud Vision API key | `AIzaSyAXpv-...` | GCP 콘솔 → API 및 서비스 → 사용자 인증 정보 |
+> | Firebase API key | `AIzaSyAgyb...` | Firebase 콘솔 → 프로젝트 설정 |
+> | odcloud 사업자조회 serviceKey | `EEA0ZjjF...` | 공공데이터포털 |
+> | 조사관 코드 (클라이언트 비밀번호) | `112255` | 운영 규칙 — 더 강한 코드로 |
+
+현재 빌드 시스템은 `local.properties` 에서 다음 키들을 읽어 `BuildConfig` 로 주입합니다.
+키 문자열은 더 이상 소스에 포함되지 않습니다.
+
+| local.properties 키 | BuildConfig 필드 | 사용처 |
+| --- | --- | --- |
+| `VISION_API_KEY` | `BuildConfig.API_KEY` | Cloud Vision OCR |
+| `BUSINESS_API_KEY` | `BuildConfig.BUSINESS_API_KEY` | odcloud 사업자번호 진위 검증 |
+| `INSPECTOR_CODE` | `BuildConfig.INSPECTOR_CODE` | 역학조사관 진입 코드 |
+
+`local.properties` 와 `app/google-services.json` 은 `.gitignore` 권장 — 본인의 키를
+다른 저장소나 PR 에 다시 커밋하지 마세요.
 
 ## 빌드 방법
 
-1. Android Studio (Arctic Fox 이상)로 프로젝트 열기
-2. `app/google-services.json`에 본인 Firebase 프로젝트 설정 파일 배치
-3. 프로젝트 루트의 `local.properties`에 다음 줄을 추가
+1. Android Studio (Arctic Fox 이상) 로 프로젝트 열기
+2. `app/google-services.json` 을 본인 Firebase 프로젝트 콘솔에서 다운로드 받아 배치
+   (현재 파일은 placeholder)
+3. 프로젝트 루트의 `local.properties` 에 다음 줄들을 추가
    ```properties
    VISION_API_KEY=여기에_본인의_Cloud_Vision_API_KEY
+   BUSINESS_API_KEY=여기에_본인의_odcloud_serviceKey
+   INSPECTOR_CODE=여기에_본인이_정한_조사관_코드
    ```
 4. Gradle Sync 후 `Run 'app'`
 
