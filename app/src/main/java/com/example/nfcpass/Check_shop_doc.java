@@ -6,10 +6,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Check_shop_doc extends AppCompatActivity {
 
@@ -51,11 +56,33 @@ public class Check_shop_doc extends AppCompatActivity {
 
                     String url = "https://api.odcloud.kr/api/nts-businessman/v1/validate?serviceKey="
                             + com.example.nfcpass.BuildConfig.BUSINESS_API_KEY;
-                    String jsonData = "{  \"businesses\": [    {      \"b_no\": \""
-                            + numberData + "\",      \"start_dt\": \""
-                            + dateData + "\",      \"p_nm\": \""
-                            + nameData + "\",      \"p_nm2\": \"\",      \"b_nm\": \"\",      \"corp_no\": \"\",      \"b_sector\": \"\",      \"b_type\": \"\"    }  ]}";
 
+                    // Build the JSON payload via JSONObject so that any
+                    // user-typed quotes / control characters get properly
+                    // escaped rather than breaking the payload structure.
+                    String jsonData;
+                    try {
+                        JSONObject business = new JSONObject();
+                        business.put("b_no", numberData);
+                        business.put("start_dt", dateData);
+                        business.put("p_nm", nameData);
+                        business.put("p_nm2", "");
+                        business.put("b_nm", "");
+                        business.put("corp_no", "");
+                        business.put("b_sector", "");
+                        business.put("b_type", "");
+
+                        JSONArray businesses = new JSONArray();
+                        businesses.put(business);
+
+                        JSONObject payload = new JSONObject();
+                        payload.put("businesses", businesses);
+                        jsonData = payload.toString();
+                    } catch (JSONException e) {
+                        Log.e("Check_shop_doc", "JSON build failed", e);
+                        Toast.makeText(Check_shop_doc.this, "입력값을 확인해주세요.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
                     // AsyncTask를 통해 HttpURLConnection 수행.
                     NetworkTask networkTask = new NetworkTask(url, jsonData);
