@@ -1,4 +1,4 @@
-package com.example.nfcpass;
+package com.jumincho.cvpass;
 
 import android.content.Context;
 
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.example.nfcpass", appContext.getPackageName());
+        assertEquals("com.jumincho.cvpass", appContext.getPackageName());
     }
 }

@@ -1,4 +1,4 @@
-package com.example.nfcpass;
+package com.jumincho.cvpass;
 
 import org.junit.Test;
 

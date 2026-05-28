@@ -198,6 +198,11 @@ This project received the **silver award at the 2021 JBNU CS Capstone Showcase**
 - **Web parsing**: Jsoup 1.14.3
 - **NFC**: `android.nfc.NfcAdapter` (NDEF)
 
+> For copyright and security reasons, this repository has some image assets,
+> fonts, the Firebase `google-services.json`, and the Cloud Vision API key
+> removed. To build it yourself, plug in your own Firebase project and API
+> keys.
+
 ### Secrets handling
 
 The build system reads keys from `local.properties` and injects them via
