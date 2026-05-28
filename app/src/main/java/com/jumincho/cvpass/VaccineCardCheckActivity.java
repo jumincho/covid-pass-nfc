@@ -1,4 +1,4 @@
-package com.example.nfcpass;
+package com.jumincho.cvpass;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -49,7 +49,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Check_user_doc extends AppCompatActivity {
+public class VaccineCardCheckActivity extends AppCompatActivity {
     private static final String CLOUD_VISION_API_KEY = BuildConfig.API_KEY;
     public static final String FILE_NAME = "temp.jpg";
     private static final String ANDROID_CERT_HEADER = "X-Android-Cert";
@@ -57,7 +57,7 @@ public class Check_user_doc extends AppCompatActivity {
     private static final int MAX_LABEL_RESULTS = 10;
     private static final int MAX_DIMENSION = 1200;
 
-    private static final String TAG = Check_user_doc.class.getSimpleName();
+    private static final String TAG = VaccineCardCheckActivity.class.getSimpleName();
     private static final int GALLERY_PERMISSIONS_REQUEST = 0;
     private static final int GALLERY_IMAGE_REQUEST = 1;
     public static final int CAMERA_PERMISSIONS_REQUEST = 2;
@@ -87,7 +87,7 @@ public class Check_user_doc extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (!(check_edit_name.getText().toString().equals("")) && !(openday1.getText().toString().equals("")) && openday1.getText().toString().length() == 11) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Check_user_doc.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(VaccineCardCheckActivity.this);
                     builder
                             .setMessage("인증서 사진을 불러와주세요.")
                             .setPositiveButton("사진 선택", (dialog, which) -> startGalleryChooser());
@@ -99,10 +99,10 @@ public class Check_user_doc extends AppCompatActivity {
                     }
                 }
                 else if(openday1.getText().toString().length() != 11){
-                    Toast.makeText(Check_user_doc.this,"올바른 번호를 입력해주세요.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VaccineCardCheckActivity.this,"올바른 번호를 입력해주세요.",Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    Toast.makeText(Check_user_doc.this,"이름과 번호를 입력해주세요.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(VaccineCardCheckActivity.this,"이름과 번호를 입력해주세요.",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -155,7 +155,7 @@ public class Check_user_doc extends AppCompatActivity {
 
     public void uploadImage(Uri uri) {
         if (uri != null) {
-            dialog2 = new ProgressDialog(Check_user_doc.this);
+            dialog2 = new ProgressDialog(VaccineCardCheckActivity.this);
             dialog2.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             dialog2.setCancelable(false);
@@ -264,12 +264,12 @@ public class Check_user_doc extends AppCompatActivity {
     }
 
     private class LableDetectionTask extends AsyncTask<Object, Void, String> {
-        private final WeakReference<Check_user_doc> Check_UserWeakReference;
+        private final WeakReference<VaccineCardCheckActivity> Check_UserWeakReference;
         private Vision.Images.Annotate mRequest;
 
 
 
-        LableDetectionTask(Check_user_doc activity, Vision.Images.Annotate annotate) {
+        LableDetectionTask(VaccineCardCheckActivity activity, Vision.Images.Annotate annotate) {
             Check_UserWeakReference = new WeakReference<>(activity);
             mRequest = annotate;
         }
@@ -291,7 +291,7 @@ public class Check_user_doc extends AppCompatActivity {
         }
 
         protected void onPostExecute(String result) {
-            Check_user_doc activity = Check_UserWeakReference.get();
+            VaccineCardCheckActivity activity = Check_UserWeakReference.get();
             if (activity != null && !activity.isFinishing()) {
             }
         }
@@ -366,7 +366,7 @@ public class Check_user_doc extends AppCompatActivity {
 
             if(!(Vtry.equals("3")) && !(Vday.equals("3"))) {
                 dialog2.dismiss();
-                Intent intent = new Intent(context, Nfc_pass_check.class);
+                Intent intent = new Intent(context, NfcEntryActivity.class);
                 intent.putExtra("백신", Vtry);
                 intent.putExtra("인증", Vday);
                 saveUserDatevac(Vtry,Vday);

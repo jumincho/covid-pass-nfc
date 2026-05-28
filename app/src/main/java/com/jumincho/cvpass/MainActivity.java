@@ -1,4 +1,4 @@
-package com.example.nfcpass;
+package com.jumincho.cvpass;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-            Intent intent = new Intent(MainActivity.this, Nfc_pass_check.class);
+            Intent intent = new Intent(MainActivity.this, NfcEntryActivity.class);
             startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Intent intent = new Intent(MainActivity.this, Creat_user.class);
+                    Intent intent = new Intent(MainActivity.this, ProfileSetupActivity.class);
                     startActivity(intent);
                     overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     finish();

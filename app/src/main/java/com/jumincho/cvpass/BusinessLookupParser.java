@@ -1,16 +1,16 @@
-package com.example.nfcpass;
+package com.jumincho.cvpass;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class DataParser {
+public class BusinessLookupParser {
     String b_data;
     String b_no;
     String b_name;
     String b_date;
     String valid;
-    public DataParser(String b_data){
+    public BusinessLookupParser(String b_data){
         this.b_data = b_data;
         b_dataParser();
     }

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/cv_check_lay"
-    tools:context=".Check_user_doc">
+    tools:context=".VaccineCardCheckActivity">
 
 
     <LinearLayout

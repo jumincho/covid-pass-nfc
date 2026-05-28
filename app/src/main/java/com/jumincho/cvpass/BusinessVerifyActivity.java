@@ -1,4 +1,4 @@
-package com.example.nfcpass;
+package com.jumincho.cvpass;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,7 +16,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Check_shop_doc extends AppCompatActivity {
+public class BusinessVerifyActivity extends AppCompatActivity {
 
     String resultName;
     String resultNumber;
@@ -50,12 +50,12 @@ public class Check_shop_doc extends AppCompatActivity {
                 String dateData = et_BusinessDate.getText().toString().trim();
 
                 if(numberData.equals("") || nameData.equals("") || dateData.equals("")) {
-                    Toast.makeText(Check_shop_doc.this,"올바른 값을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BusinessVerifyActivity.this,"올바른 값을 입력해주세요.", Toast.LENGTH_SHORT).show();
                 }else {
 
 
                     String url = "https://api.odcloud.kr/api/nts-businessman/v1/validate?serviceKey="
-                            + com.example.nfcpass.BuildConfig.BUSINESS_API_KEY;
+                            + com.jumincho.cvpass.BuildConfig.BUSINESS_API_KEY;
 
                     // Build the JSON payload via JSONObject so that any
                     // user-typed quotes / control characters get properly
@@ -79,8 +79,8 @@ public class Check_shop_doc extends AppCompatActivity {
                         payload.put("businesses", businesses);
                         jsonData = payload.toString();
                     } catch (JSONException e) {
-                        Log.e("Check_shop_doc", "JSON build failed", e);
-                        Toast.makeText(Check_shop_doc.this, "입력값을 확인해주세요.", Toast.LENGTH_SHORT).show();
+                        Log.e("BusinessVerifyActivity", "JSON build failed", e);
+                        Toast.makeText(BusinessVerifyActivity.this, "입력값을 확인해주세요.", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -109,8 +109,8 @@ public class Check_shop_doc extends AppCompatActivity {
         protected String doInBackground(Void... params) {
             String result; // 요청 결과를 저장할 변수.
 
-            RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
-            result = requestHttpURLConnection.request(url, jsonData);
+            HttpClient httpClient = new HttpClient();
+            result = httpClient.request(url, jsonData);
 
             return result;
         }
@@ -120,17 +120,17 @@ public class Check_shop_doc extends AppCompatActivity {
             super.onPostExecute(s);
 
             if (s == null) {
-                Toast.makeText(Check_shop_doc.this,"확인할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(BusinessVerifyActivity.this,"확인할 수 없습니다.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            DataParser dataParser = new DataParser(s);
+            BusinessLookupParser dataParser = new BusinessLookupParser(s);
             if("02".equals(dataParser.getValid())){
-                Toast.makeText(Check_shop_doc.this,"확인할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(BusinessVerifyActivity.this,"확인할 수 없습니다.", Toast.LENGTH_SHORT).show();
             }else {
                 resultName = dataParser.getName();
                 resultNumber = dataParser.getNo();
 
-                Intent intent = new Intent(Check_shop_doc.this,Nfc_pass_check.class);
+                Intent intent = new Intent(BusinessVerifyActivity.this,NfcEntryActivity.class);
                 intent.putExtra("값","1");
                 intent.putExtra("사업자번호",resultNumber);
                 intent.putExtra("사업자이름",resultName);

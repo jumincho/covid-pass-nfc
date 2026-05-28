@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.nfcpass">
+    package="com.jumincho.cvpass">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -23,10 +23,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
-            android:name=".history"
+            android:name=".HistoryActivity"
             android:exported="false" />
         <activity
-            android:name=".Nfc_pass_check"
+            android:name=".NfcEntryActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
@@ -43,13 +43,13 @@
                 android:resource="@xml/nfc_tech_filter" />
         </activity>
         <activity
-            android:name=".Creat_user"
+            android:name=".ProfileSetupActivity"
             android:exported="false" />
         <activity
-            android:name=".Check_shop_doc"
+            android:name=".BusinessVerifyActivity"
             android:exported="false" />
         <activity
-            android:name=".Check_user_doc"
+            android:name=".VaccineCardCheckActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

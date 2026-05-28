@@ -1,4 +1,4 @@
-package com.example.nfcpass;
+package com.jumincho.cvpass;
 
 
 import java.io.BufferedReader;
@@ -11,7 +11,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public class RequestHttpURLConnection {
+public class HttpClient {
 
     public String request(String _url, String jsonData){
         HttpURLConnection con = null;

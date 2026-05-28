@@ -1,4 +1,4 @@
-package com.example.nfcpass;
+package com.jumincho.cvpass;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class history extends AppCompatActivity {
+public class HistoryActivity extends AppCompatActivity {
 
     TextView date;
     Date day;
@@ -65,7 +65,7 @@ public class history extends AppCompatActivity {
         today = simpleDateFormat.format(day);
         date.setText(today);
 
-        dialog = new Dialog(history.this);
+        dialog = new Dialog(HistoryActivity.this);
 
         namelist.clear();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -83,7 +83,7 @@ public class history extends AppCompatActivity {
                     namelist.add(id.length() >= 3 ? id.substring(0, 3) : id);
                     total.setText("총 입장 인원 : " + namelist.size() + " 명");
                 }
-                ArrayAdapter adapter = new ArrayAdapter(history.this, android.R.layout.simple_list_item_1, namelist);
+                ArrayAdapter adapter = new ArrayAdapter(HistoryActivity.this, android.R.layout.simple_list_item_1, namelist);
                 listview.setAdapter(adapter);
             }
         });

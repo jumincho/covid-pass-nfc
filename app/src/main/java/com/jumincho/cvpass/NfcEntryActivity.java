@@ -1,4 +1,4 @@
-package com.example.nfcpass;
+package com.jumincho.cvpass;
 
 import static android.net.wifi.p2p.WifiP2pManager.ERROR;
 
@@ -40,7 +40,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-public class Nfc_pass_check extends Activity {
+public class NfcEntryActivity extends Activity {
 
     NfcAdapter nfcAdapter;
     PendingIntent pendingIntent;
@@ -171,7 +171,7 @@ public class Nfc_pass_check extends Activity {
             public void onClick(View view) {
                 Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 vibrator.cancel();
-                Intent intent1 = new Intent(Nfc_pass_check.this,Creat_user.class);
+                Intent intent1 = new Intent(NfcEntryActivity.this,ProfileSetupActivity.class);
                 startActivity(intent1);
                 overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                 finish();

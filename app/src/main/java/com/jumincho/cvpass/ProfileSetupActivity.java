@@ -1,4 +1,4 @@
-package com.example.nfcpass;
+package com.jumincho.cvpass;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
-public class Creat_user extends AppCompatActivity {
+public class ProfileSetupActivity extends AppCompatActivity {
 
     Button go_shop,go_user,go_history;
     Dialog dialog;
@@ -27,7 +27,7 @@ public class Creat_user extends AppCompatActivity {
         go_shop = (Button) findViewById(R.id.go_shop);
         go_history = findViewById(R.id.go_history);
 
-        dialog = new Dialog(Creat_user.this);
+        dialog = new Dialog(ProfileSetupActivity.this);
         dialog.setContentView(R.layout.user_info_pass);
 
         go_history.setOnClickListener(new View.OnClickListener() {
@@ -41,7 +41,7 @@ public class Creat_user extends AppCompatActivity {
         go_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Creat_user.this,Check_user_doc.class);
+                Intent intent = new Intent(ProfileSetupActivity.this,VaccineCardCheckActivity.class);
                 startActivity(intent);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();
@@ -51,7 +51,7 @@ public class Creat_user extends AppCompatActivity {
         go_shop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Creat_user.this,Check_shop_doc.class);
+                Intent intent = new Intent(ProfileSetupActivity.this,BusinessVerifyActivity.class);
                 startActivity(intent);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 finish();
@@ -126,15 +126,15 @@ public class Creat_user extends AppCompatActivity {
         go_list.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(check_code.getText().toString().equals(com.example.nfcpass.BuildConfig.INSPECTOR_CODE)){
-                    Intent intent = new Intent(Creat_user.this,history.class);
+                if(check_code.getText().toString().equals(com.jumincho.cvpass.BuildConfig.INSPECTOR_CODE)){
+                    Intent intent = new Intent(ProfileSetupActivity.this,HistoryActivity.class);
                     intent.putExtra("정보",shop_info.getText().toString());
                     startActivity(intent);
                     overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
                     finish();
                 }
                 else{
-                    Toast.makeText(Creat_user.this,"올바른 조사관 코드를 입력해주세요.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileSetupActivity.this,"올바른 조사관 코드를 입력해주세요.",Toast.LENGTH_SHORT).show();
                 }
             }
         });
