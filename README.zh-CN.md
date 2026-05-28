@@ -50,7 +50,7 @@
 
 - **语言**: Java
 - **平台**: Android (minSdk 28 / targetSdk 31)
-- **构建**: Gradle 7.0.3
+- **构建**: Gradle wrapper 7.0.2 · Android Gradle Plugin 7.0.3
 - **数据库**: Cloud Firestore
 - **图像分析**: Google Cloud Vision API
 - **网页解析**: Jsoup 1.14.3
