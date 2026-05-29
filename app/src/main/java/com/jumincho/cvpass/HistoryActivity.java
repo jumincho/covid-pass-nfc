@@ -68,6 +68,7 @@ public class HistoryActivity extends AppCompatActivity {
         dialog = new Dialog(HistoryActivity.this);
 
         namelist.clear();
+        namelist2.clear();  // keep namelist2 (doc ids) in lockstep with namelist; otherwise re-entry misaligns the two lists
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("사업장").document(shopinfo).collection(today).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
