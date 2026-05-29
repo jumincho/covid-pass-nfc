@@ -15,7 +15,7 @@ jobs:
 
       - name: Required files
         run: |
-          for f in README.md LICENSE app/build.gradle build.gradle settings.gradle gradle.properties; do
+          for f in README.md LICENSE app/build.gradle build.gradle settings.gradle gradle.properties gradlew gradlew.bat; do
             if [ ! -f "$f" ]; then
               echo "::error::Missing required file: $f"
               exit 1
@@ -36,24 +36,46 @@ jobs:
             exit 1
           fi
 
-      - name: .gitignore covers known secret paths
+      - name: local.properties is gitignored
         run: |
-          for path in "local.properties" "app/google-services.json"; do
-            if ! grep -Fq "$path" .gitignore; then
-              echo "::warning::$path should be in .gitignore"
-            fi
-          done
-
-      - name: README links resolve to existing paths
-        run: |
-          # Extract relative links from README and verify they exist
-          missing=0
-          for link in $(grep -oE '\]\(\./[^)]+\)' README.md | sed 's|](\./||; s|)$||' | sort -u); do
-            if [ ! -e "$link" ]; then
-              echo "::warning::README links to missing path: $link"
-              missing=$((missing+1))
-            fi
-          done
-          if [ "$missing" -gt 0 ]; then
-            echo "::warning::$missing README link(s) point to non-existent paths"
+          if ! grep -Fq "local.properties" .gitignore; then
+            echo "::error::local.properties must be in .gitignore"
+            exit 1
           fi
+
+  build:
+    name: Build & Unit Test
+    runs-on: ubuntu-latest
+    env:
+      ANDROID_SDK_ROOT: ${{ github.workspace }}/.android-sdk
+      ANDROID_HOME: ${{ github.workspace }}/.android-sdk
+    steps:
+      - uses: actions/checkout@v4
+
+      # AGP 7.0.x targets JDK 11.
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "11"
+
+      # Install the Android SDK by hand rather than via a third-party action,
+      # so the workflow stays within an "actions created by GitHub only" policy.
+      # cmdline-tools 9477386 is the last line that runs on JDK 11.
+      - name: Install Android SDK
+        run: |
+          set -eux
+          tools="$ANDROID_SDK_ROOT/cmdline-tools"
+          mkdir -p "$tools"
+          curl -fsSL -o /tmp/cmdline-tools.zip \
+            https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+          unzip -q /tmp/cmdline-tools.zip -d "$tools"
+          mv "$tools/cmdline-tools" "$tools/latest"
+          yes | "$tools/latest/bin/sdkmanager" --licenses >/dev/null
+          "$tools/latest/bin/sdkmanager" \
+            "platform-tools" "platforms;android-31" "build-tools;30.0.3"
+
+      # The committed google-services.json is a build-only placeholder, so the
+      # google-services plugin and assembleDebug run without real Firebase keys.
+      - name: Assemble & unit test
+        run: ./gradlew --no-daemon --stacktrace assembleDebug testDebugUnitTest

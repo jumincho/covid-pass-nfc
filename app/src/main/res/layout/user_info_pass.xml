@@ -21,7 +21,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/black"
-            android:fontFamily="@font/gmsansmid"
             android:layout_marginBottom="5dp"
             android:textSize="20dp"
             android:text="사업장 정보입력" />
@@ -32,7 +31,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/black"
-            android:fontFamily="@font/gmsansmid"
             android:textSize="20dp"
             android:hint="사업자번호+사업자이름"
             android:layout_marginBottom="20dp"
@@ -46,7 +44,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/black"
-            android:fontFamily="@font/gmsansmid"
             android:textSize="20dp"
             android:layout_marginBottom="5dp"
             android:text="조사관 코드" />
@@ -57,7 +54,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="@color/black"
-            android:fontFamily="@font/gmsansmid"
             android:textSize="20dp"
             android:layout_marginBottom="20dp"
             android:hint="조사관 코드를 입력해주세요."
@@ -70,7 +66,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/button_line"
-            android:fontFamily="@font/gmsansmid"
             android:text="확인" />
     </LinearLayout>
 </LinearLayout>

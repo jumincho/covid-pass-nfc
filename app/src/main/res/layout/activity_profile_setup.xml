@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         android:text="이용 모드 선택"
         android:gravity="center"
-        android:fontFamily="@font/gmsansmid"
         android:textColor="@color/white"
         android:textSize="30sp"
         android:layout_marginBottom="5dp"

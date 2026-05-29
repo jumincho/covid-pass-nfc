@@ -7,6 +7,7 @@
 ![Platform](https://img.shields.io/badge/platform-Android-3DDC84?logo=android&logoColor=white)
 ![Language](https://img.shields.io/badge/language-Java-007396?logo=java&logoColor=white)
 ![Min SDK](https://img.shields.io/badge/minSdk-28-blue)
+[![Verify](https://github.com/jumincho/covid-pass-nfc/actions/workflows/verify.yml/badge.svg)](https://github.com/jumincho/covid-pass-nfc/actions/workflows/verify.yml)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Award](https://img.shields.io/badge/2021_JBNU_silver_award-%F0%9F%A5%88-silver)
 
@@ -53,7 +54,6 @@
 - **构建**: Gradle wrapper 7.0.2 · Android Gradle Plugin 7.0.3
 - **数据库**: Cloud Firestore
 - **图像分析**: Google Cloud Vision API
-- **网页解析**: Jsoup 1.14.3
 - **NFC**: `android.nfc.NfcAdapter` (NDEF)
 
 ## 密钥管理
@@ -66,7 +66,7 @@
 | `BUSINESS_API_KEY` | `BuildConfig.BUSINESS_API_KEY` | 工商登记号码查询 |
 | `INSPECTOR_CODE` | `BuildConfig.INSPECTOR_CODE` | 流行病调查员模式入口码 |
 
-`local.properties` 和 `app/google-services.json` 已加入 `.gitignore`。
+`local.properties` 已加入 `.gitignore`;`app/google-services.json` 以构建用占位文件形式提交(请替换为您自己的文件)。
 
 ## 项目结构
 
@@ -94,8 +94,9 @@ covid-pass-nfc/
 └── settings.gradle
 ```
 
-> 出于版权和安全考虑,本仓库移除了部分图像资源、字体、Firebase `google-services.json`
-> 及 Cloud Vision API 密钥。若要自行构建,需要填入您自己的 Firebase 项目与 API 密钥。
+> 出于版权考虑,本仓库移除了部分图像资源与字体,且不包含任何密钥(如 Cloud Vision
+> API 密钥)。Firebase `google-services.json` 以**占位文件**形式提交,使项目可直接构建;
+> 若要实际运行,请替换为您自己的 Firebase 文件与 API 密钥。
 
 ## 构建方法
 

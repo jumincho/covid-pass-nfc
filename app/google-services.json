@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "YOUR_PROJECT_NUMBER",
-    "project_id": "YOUR_PROJECT_ID",
-    "storage_bucket": "YOUR_PROJECT_ID.appspot.com"
+    "project_number": "000000000000",
+    "project_id": "cvpass-example",
+    "storage_bucket": "cvpass-example.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "YOUR_MOBILESDK_APP_ID",
+        "mobilesdk_app_id": "1:000000000000:android:0000000000000000",
         "android_client_info": {
           "package_name": "com.jumincho.cvpass"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "YOUR_OAUTH_CLIENT_ID.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "YOUR_FIREBASE_API_KEY"
+          "current_key": "DUMMY_FIREBASE_API_KEY_REPLACE_ME"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "YOUR_OAUTH_CLIENT_ID.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

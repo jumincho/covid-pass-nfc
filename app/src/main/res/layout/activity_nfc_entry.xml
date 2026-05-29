@@ -38,7 +38,7 @@
             android:id="@+id/doc"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/cv_pass_id"
+            android:background="@drawable/pass_id"
             android:gravity="bottom"
             android:orientation="vertical">
 
@@ -64,7 +64,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:fontFamily="@font/gmsansmid"
                         android:textSize="20sp"
                         android:layout_marginBottom="10dp"
                         android:textColor="#838484"
@@ -75,7 +74,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:fontFamily="@font/gmsansmid"
                         android:textColor="@color/black"
                         android:text="2차 접종" />
                 </LinearLayout>
@@ -92,7 +90,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:fontFamily="@font/gmsansmid"
                         android:textSize="20sp"
                         android:textColor="#838484"
                         android:layout_marginBottom="10dp"
@@ -103,7 +100,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:fontFamily="@font/gmsansmid"
                         android:textColor="@color/black"
                         android:text="2021.11.23" />
                 </LinearLayout>
@@ -133,7 +129,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:fontFamily="@font/gmsansmid"
                 android:gravity="center"
                 android:text="사업자 태그 기록"
                 android:textColor="@color/white"
@@ -160,7 +155,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:fontFamily="@font/gmsansmid"
             android:gravity="center"
             android:text="태그에 핸드폰을 접촉 시켜주세요."
             android:textColor="@color/white"

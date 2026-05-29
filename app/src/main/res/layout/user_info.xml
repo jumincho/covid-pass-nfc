@@ -25,7 +25,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:fontFamily="@font/gmsansmid"
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:text="이름" />
@@ -36,7 +35,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:fontFamily="@font/gmsansmid"
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:text="홍길동" />
@@ -54,7 +52,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:fontFamily="@font/gmsansmid"
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:text="방문시간 : " />
@@ -65,7 +62,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:fontFamily="@font/gmsansmid"
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:text="2021-11-26 13:00:11" />
@@ -84,7 +80,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:fontFamily="@font/gmsansmid"
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:text="전화번호 : " />
@@ -95,7 +90,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:fontFamily="@font/gmsansmid"
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:text="010-1111-2222" />

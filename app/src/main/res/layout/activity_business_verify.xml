@@ -20,7 +20,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:fontFamily="@font/gmsansmid"
             android:gravity="center"
             android:text="사업자 인증"
             android:textColor="@color/white"
@@ -48,7 +47,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:fontFamily="@font/gmsansmid"
             android:text="이름 : " />
 
         <EditText
@@ -73,7 +71,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:fontFamily="@font/gmsansmid"
             android:text="개업일자 : " />
 
         <EditText
@@ -93,7 +90,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="20dp"
-        android:fontFamily="@font/gmsansmid"
         android:gravity="center"
         android:text="사업자 번호"
         android:textColor="@color/white"
@@ -121,7 +117,6 @@
             android:id="@+id/slide_one"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/gmsansmid"
             android:gravity="center"
             android:text="-"
             android:textColor="@color/white"
@@ -144,7 +139,6 @@
             android:id="@+id/slide_two"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/gmsansmid"
             android:gravity="center"
             android:text="-"
             android:textColor="@color/white"

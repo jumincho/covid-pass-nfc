@@ -1,7 +1,5 @@
 package com.jumincho.cvpass;
 
-import static android.net.wifi.p2p.WifiP2pManager.ERROR;
-
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -80,7 +78,7 @@ public class NfcEntryActivity extends Activity {
         tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if (status != ERROR) {
+                if (status == TextToSpeech.SUCCESS) {
                     // 언어를 선택한다.
                     tts.setLanguage(Locale.KOREAN);
                 }

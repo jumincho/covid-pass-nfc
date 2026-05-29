@@ -21,7 +21,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:fontFamily="@font/gmsansmid"
             android:gravity="center"
             android:text="백신 증명서 인증"
             android:textColor="@color/white"
@@ -49,7 +48,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:fontFamily="@font/gmsansmid"
             android:gravity="center"
             android:text="이름 : " />
 
@@ -76,7 +74,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:fontFamily="@font/gmsansmid"
             android:text="핸드폰 번호 : " />
 
         <EditText
@@ -112,7 +109,6 @@
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/gmsansmid"
         android:gravity="center"
         android:textColor="@color/white"
         android:textSize="30sp"
