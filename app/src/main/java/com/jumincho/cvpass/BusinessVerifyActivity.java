@@ -124,7 +124,10 @@ public class BusinessVerifyActivity extends AppCompatActivity {
                 return;
             }
             BusinessLookupParser dataParser = new BusinessLookupParser(s);
-            if("02".equals(dataParser.getValid())){
+            // Fail closed: a null `valid` means the response could not be parsed, so
+            // don't treat it as a confirmed business (the previous code fell through
+            // to the success branch with null name/number).
+            if(dataParser.getValid() == null || "02".equals(dataParser.getValid())){
                 Toast.makeText(BusinessVerifyActivity.this,"확인할 수 없습니다.", Toast.LENGTH_SHORT).show();
             }else {
                 resultName = dataParser.getName();

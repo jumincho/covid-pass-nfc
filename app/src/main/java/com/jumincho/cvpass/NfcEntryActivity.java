@@ -141,6 +141,7 @@ public class NfcEntryActivity extends Activity {
             // Stop here, we definitely need NFC
             Toast.makeText(this, "NFC를 지원하지 않는 기기 입니다. QR체크인을 진행해 주세요.", Toast.LENGTH_LONG).show();
             finish();
+            return;
         }
 
         timenow = System.currentTimeMillis();
