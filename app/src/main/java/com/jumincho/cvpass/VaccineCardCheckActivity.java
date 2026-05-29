@@ -75,7 +75,7 @@ public class VaccineCardCheckActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_check_user_doc);
+        setContentView(R.layout.activity_vaccine_card_check);
 
         mMainImage = findViewById(R.id.imageView);
         user_check = findViewById(R.id.user_check);
@@ -255,7 +255,7 @@ public class VaccineCardCheckActivity extends AppCompatActivity {
 
         // Do the real work in an async task, because we need to use the network anyway
         try {
-            AsyncTask<Object, Void, String> labelDetectionTask = new LableDetectionTask(this, prepareAnnotationRequest(bitmap));
+            AsyncTask<Object, Void, String> labelDetectionTask = new LabelDetectionTask(this, prepareAnnotationRequest(bitmap));
             labelDetectionTask.execute();
         } catch (IOException e) {
             Log.d(TAG, "failed to make API request because of other IOException " +
@@ -263,13 +263,13 @@ public class VaccineCardCheckActivity extends AppCompatActivity {
         }
     }
 
-    private class LableDetectionTask extends AsyncTask<Object, Void, String> {
+    private class LabelDetectionTask extends AsyncTask<Object, Void, String> {
         private final WeakReference<VaccineCardCheckActivity> Check_UserWeakReference;
         private Vision.Images.Annotate mRequest;
 
 
 
-        LableDetectionTask(VaccineCardCheckActivity activity, Vision.Images.Annotate annotate) {
+        LabelDetectionTask(VaccineCardCheckActivity activity, Vision.Images.Annotate annotate) {
             Check_UserWeakReference = new WeakReference<>(activity);
             mRequest = annotate;
         }
@@ -374,8 +374,8 @@ public class VaccineCardCheckActivity extends AppCompatActivity {
                 finish();
             }else {
                         dialog2.dismiss();
-                        notifi notifis = new notifi();
-                        notifis.start();
+                        NotificationThread notificationThread = new NotificationThread();
+                        notificationThread.start();
 
             }
 
@@ -407,7 +407,7 @@ public class VaccineCardCheckActivity extends AppCompatActivity {
     }
 
 
-    class notifi extends Thread {
+    class NotificationThread extends Thread {
 
         @Override
         public void run(){

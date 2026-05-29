@@ -67,7 +67,7 @@ public class NfcEntryActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nfc_pass_check);
+        setContentView(R.layout.activity_nfc_entry);
         context = this;
 
 
