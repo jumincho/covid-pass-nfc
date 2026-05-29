@@ -21,7 +21,7 @@ public class ProfileSetupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_creat_user);
+        setContentView(R.layout.activity_profile_setup);
 
         go_user = (Button) findViewById(R.id.go_user);
         go_shop = (Button) findViewById(R.id.go_shop);

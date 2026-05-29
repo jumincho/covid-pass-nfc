@@ -33,7 +33,7 @@ public class BusinessVerifyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_check_shop_doc);
+        setContentView(R.layout.activity_business_verify);
 
         et_BusinessNumber_1 = (EditText) findViewById(R.id.et_BusinessNumber_1);
         et_BusinessNumber_2 = (EditText) findViewById(R.id.et_BusinessNumber_2);
