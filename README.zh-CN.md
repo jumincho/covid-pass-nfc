@@ -119,6 +119,16 @@ covid-pass-nfc/
 - 演示视频: [YouTube —— 2021 全北大学计算机系作品竞赛](https://www.youtube.com/watch?v=LHE4dr8aTKQ&list=PLFAjt9goCKzyHfSKoV9AnDuxl1U9w1mLL&index=13)
 - 演讲幻灯片: [`docs/presentation.pptx`](./docs/presentation.pptx)
 
+## 屏幕截图
+
+<table align="center">
+<tr>
+<td><img src="https://user-images.githubusercontent.com/93726941/176481050-1c6acb2c-4d15-4c1f-a039-8b3b74251569.png" width="280"/></td>
+<td><img src="https://user-images.githubusercontent.com/93726941/176481320-b1f82186-2de0-43a9-8df7-b73973614fa4.png" width="280"/></td>
+<td><img src="https://user-images.githubusercontent.com/93726941/176481365-d3fd1e10-963b-418b-be95-9d7654d9dda3.png" width="280"/></td>
+</tr>
+</table>
+
 ## 获奖
 
 - **2021 年全北大学计算机工程系作品竞赛银奖** (2021.11.26)

@@ -167,7 +167,7 @@ exposure** and **slow scan times**. CV-PASS replaces QR with NFC: users tap
 their phone to the tag once, and the entry is logged. An epidemiologist mode
 also lets contact tracers query a venue's entry history on demand.
 
-This project received the **silver award at the 2021 JBNU CS Capstone Showcase**.
+This project received the **silver award at the 2021 JBNU CS Student Project Competition**.
 
 ### Features
 
@@ -235,8 +235,22 @@ The build system reads keys from `local.properties` and injects them via
 
 ### Materials
 
-- Demo video: [YouTube — 2021 JBNU CS Capstone Showcase](https://www.youtube.com/watch?v=LHE4dr8aTKQ&list=PLFAjt9goCKzyHfSKoV9AnDuxl1U9w1mLL&index=13)
+- Demo video: [YouTube — 2021 JBNU CS Student Project Competition](https://www.youtube.com/watch?v=LHE4dr8aTKQ&list=PLFAjt9goCKzyHfSKoV9AnDuxl1U9w1mLL&index=13)
 - Slides: [`docs/presentation.pptx`](./docs/presentation.pptx)
+
+### Screenshots
+
+<table align="center">
+<tr>
+<td><img src="https://user-images.githubusercontent.com/93726941/176481050-1c6acb2c-4d15-4c1f-a039-8b3b74251569.png" width="280"/></td>
+<td><img src="https://user-images.githubusercontent.com/93726941/176481320-b1f82186-2de0-43a9-8df7-b73973614fa4.png" width="280"/></td>
+<td><img src="https://user-images.githubusercontent.com/93726941/176481365-d3fd1e10-963b-418b-be95-9d7654d9dda3.png" width="280"/></td>
+</tr>
+</table>
+
+### Award
+
+- **Silver award, 2021 JBNU CS Student Project Competition** (Nov 26, 2021)
 
 ### Team
 
