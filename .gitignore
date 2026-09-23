@@ -1,21 +1,21 @@
-# Gradle
+# Gradle and Kotlin build output
 .gradle/
-/build
-app/build/
-**/build/
+.kotlin/
+build/
+
+# Local configuration and secrets (see README: "Optional configuration")
+local.properties
+google-services.json
+*.jks
+*.keystore
 
 # Android Studio / IntelliJ
-*.iml
 .idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
 
-# Local config & secrets
-local.properties
-/local.properties
-# app/google-services.json is intentionally committed as a placeholder so the
-# project configures out of the box (see README); swap in your own to run it.
-
-# OS / misc
+# OS files
 .DS_Store
-/captures
-.externalNativeBuild
-.cxx
+Thumbs.db
