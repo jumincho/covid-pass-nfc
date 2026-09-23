@@ -1,0 +1,139 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "8e0691a07af6d3c4514f311178649d5d",
+    "entities": [
+      {
+        "tableName": "check_ins",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `venue_id` TEXT NOT NULL, `venue_name` TEXT NOT NULL, `visitor_name` TEXT NOT NULL, `phone` TEXT NOT NULL, `checked_in_at` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "venueId",
+            "columnName": "venue_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "venueName",
+            "columnName": "venue_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "visitorName",
+            "columnName": "visitor_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phone",
+            "columnName": "phone",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "checkedInAt",
+            "columnName": "checked_in_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_check_ins_venue_id_checked_in_at",
+            "unique": false,
+            "columnNames": [
+              "venue_id",
+              "checked_in_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_check_ins_venue_id_checked_in_at` ON `${TABLE_NAME}` (`venue_id`, `checked_in_at`)"
+          },
+          {
+            "name": "index_check_ins_checked_in_at",
+            "unique": false,
+            "columnNames": [
+              "checked_in_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_check_ins_checked_in_at` ON `${TABLE_NAME}` (`checked_in_at`)"
+          }
+        ]
+      },
+      {
+        "tableName": "visits",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `venue_id` TEXT NOT NULL, `venue_name` TEXT NOT NULL, `visited_at` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "venueId",
+            "columnName": "venue_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "venueName",
+            "columnName": "venue_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "visitedAt",
+            "columnName": "visited_at",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_visits_venue_id_visited_at",
+            "unique": false,
+            "columnNames": [
+              "venue_id",
+              "visited_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_visits_venue_id_visited_at` ON `${TABLE_NAME}` (`venue_id`, `visited_at`)"
+          },
+          {
+            "name": "index_visits_visited_at",
+            "unique": false,
+            "columnNames": [
+              "visited_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_visits_visited_at` ON `${TABLE_NAME}` (`visited_at`)"
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8e0691a07af6d3c4514f311178649d5d')"
+    ]
+  }
+}

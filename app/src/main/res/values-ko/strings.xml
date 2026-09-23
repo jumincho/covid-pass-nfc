@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_tagline">NFC로 간편하게 남기는 출입 기록</string>
+
+    <!-- 공통 동작 -->
+    <string name="action_back">뒤로</string>
+    <string name="action_cancel">취소</string>
+    <string name="action_close">닫기</string>
+    <string name="action_confirm">확인</string>
+    <string name="action_done">완료</string>
+    <string name="action_retry">다시 시도</string>
+    <string name="action_save">저장</string>
+    <string name="action_select_date">날짜 선택</string>
+
+    <!-- 홈 -->
+    <string name="home_choose_role">어떤 용도로 CV-PASS를 사용하시나요?</string>
+    <string name="role_visitor_title">방문자</string>
+    <string name="role_visitor_description">접종 증명을 확인하고 매장의 NFC 태그에 휴대폰을 대어 입장을 기록합니다.</string>
+    <string name="role_owner_title">사업주</string>
+    <string name="role_owner_description">사업자 정보를 확인하고 출입구에 둘 NFC 태그를 만듭니다.</string>
+    <string name="role_inspector_title">역학조사관</string>
+    <string name="role_inspector_description">역학조사를 위해 매장의 출입 기록을 조회합니다.</string>
+    <string name="home_visitor_no_profile">아직 정보를 등록하지 않았습니다</string>
+    <string name="home_visitor_no_pass">확인된 접종 증명이 없습니다</string>
+    <string name="home_owner_no_venue">등록된 매장이 없습니다</string>
+    <string name="home_storage_device">출입 기록은 이 기기에 저장됩니다.</string>
+    <string name="home_storage_firestore">출입 기록은 Firebase 프로젝트 %1$s에 저장됩니다.</string>
+    <string name="home_tax_service_on">사업자 정보는 국세청을 통해 확인합니다.</string>
+    <string name="home_tax_service_off">국세청 API 키가 없어 사업자등록번호 형식만 확인합니다.</string>
+
+    <!-- 방문자 정보 -->
+    <string name="onboarding_title">내 정보</string>
+    <string name="onboarding_intro">입장할 때 매장에 이름과 휴대폰 번호가 기록되며, 역학조사가 필요할 때 연락을 받을 수 있습니다.</string>
+    <string name="field_name">이름</string>
+    <string name="field_name_error">접종 증명서에 적힌 이름을 입력해 주세요.</string>
+    <string name="field_phone">휴대폰 번호</string>
+    <string name="field_phone_error" tools:ignore="TypographyDashes">010-1234-5678처럼 휴대폰 번호를 입력해 주세요.</string>
+    <string name="onboarding_privacy">출입 기록은 28일 후 삭제됩니다. 증명서 이미지는 이 기기에서만 읽고 저장하지 않습니다.</string>
+    <string name="onboarding_name_change_note">이름을 바꾸면 확인된 접종 증명이 삭제되어 증명서를 다시 확인해야 합니다.</string>
+
+    <!-- 접종 증명 -->
+    <string name="pass_title">접종 증명</string>
+    <string name="pass_card_label">코로나19 접종 증명</string>
+    <string name="pass_status_valid">유효</string>
+    <string name="pass_status_pending">%1$s부터 유효</string>
+    <string name="pass_status_none">확인 전</string>
+    <string name="pass_status_invalid">유효하지 않음</string>
+    <plurals name="pass_days_remaining">
+        <item quantity="other">%d일 남음</item>
+    </plurals>
+    <plurals name="pass_doses">
+        <item quantity="other">%d회 접종</item>
+    </plurals>
+    <string name="pass_booster">추가 접종 포함</string>
+    <string name="pass_last_dose">마지막 접종일 %1$s</string>
+    <string name="pass_verified_on">%1$s에 확인함</string>
+    <string name="pass_verify_action">증명서 확인</string>
+    <string name="pass_reverify_action">다시 확인</string>
+    <string name="pass_check_in_action">입장하기</string>
+    <string name="pass_edit_profile">정보 수정</string>
+    <string name="pass_verify_hint">COOV 앱의 예방접종 증명서 화면을 캡처한 이미지를 선택해 주세요. 이미지는 이 기기에서만 읽고 저장하지 않습니다.</string>
+    <string name="pass_rule_note">기본접종(2회, 얀센은 1회)을 마치고 14일이 지나면 유효하며, 추가 접종은 접종 당일부터 유효합니다.</string>
+    <string name="pass_reading">증명서를 읽는 중…</string>
+    <string name="pass_accepted_valid">증명서를 확인했습니다. 접종 증명이 유효합니다.</string>
+    <string name="pass_accepted_pending">증명서를 확인했습니다. %1$s부터 유효합니다.</string>
+    <string name="pass_rejected_title">증명서를 확인할 수 없습니다</string>
+    <string name="pass_reason_name_not_found">증명서에서 이름(%1$s)을 찾을 수 없습니다.</string>
+    <string name="pass_reason_name_mismatch">%2$s 님이 아닌 %1$s 님의 증명서입니다.</string>
+    <string name="pass_reason_no_dose">“2차 접종”과 같은 접종 차수를 읽을 수 없습니다.</string>
+    <string name="pass_reason_no_date">접종일을 읽을 수 없습니다.</string>
+    <plurals name="pass_reason_incomplete">
+        <item quantity="other">기본접종에 필요한 %2$d회 중 %1$d회만 확인됩니다.</item>
+    </plurals>
+    <string name="pass_read_failed">이미지를 읽을 수 없습니다. 다른 캡처 이미지로 시도해 주세요.</string>
+    <string name="pass_tip">이름, 접종 차수, 접종일이 선명하게 보이는 캡처 이미지를 사용해 주세요.</string>
+    <string name="pass_recent_visits">최근 입장 기록</string>
+    <string name="pass_no_visits">아직 입장 기록이 없습니다.</string>
+
+    <!-- 입장 -->
+    <string name="checkin_title">입장하기</string>
+    <string name="checkin_waiting_title">매장의 태그에 휴대폰을 대 주세요</string>
+    <string name="checkin_waiting_body">출입구에 있는 CV-PASS 태그에 휴대폰 뒷면을 가까이 대 주세요.</string>
+    <string name="checkin_processing">입장 기록 중…</string>
+    <string name="checkin_success_title">입장이 완료되었습니다</string>
+    <string name="checkin_success_body">%1$s · %2$s</string>
+    <string name="checkin_duplicate_title">이미 입장했습니다</string>
+    <string name="checkin_duplicate_body">%2$s에 %1$s에 입장했습니다. 10분 안에 다시 태그하면 같은 방문으로 처리됩니다.</string>
+    <string name="checkin_pass_required_title">유효한 접종 증명이 필요합니다</string>
+    <string name="checkin_pass_required_none">입장하기 전에 예방접종 증명서를 확인해 주세요.</string>
+    <string name="checkin_pass_required_pending">접종 증명은 %1$s부터 유효합니다.</string>
+    <string name="checkin_pass_required_invalid">확인된 접종 증명이 입장 기준을 충족하지 않습니다.</string>
+    <string name="checkin_profile_missing_title">먼저 내 정보를 등록해 주세요</string>
+    <string name="checkin_profile_missing_body">역학조사를 위해 매장에 이름과 휴대폰 번호가 필요합니다.</string>
+    <string name="checkin_set_up_profile">정보 등록</string>
+    <string name="checkin_tag_problem_title">태그를 인식할 수 없습니다</string>
+    <string name="checkin_tag_not_cvpass">CV-PASS 매장 태그가 아닙니다.</string>
+    <string name="checkin_tag_unsupported">더 최신 버전의 CV-PASS로 만든 태그입니다. 앱을 업데이트한 뒤 다시 시도해 주세요.</string>
+    <string name="checkin_tag_read_failed">태그를 읽지 못했습니다. 휴대폰을 움직이지 말고 다시 시도해 주세요.</string>
+    <string name="checkin_save_failed_title">입장 기록을 저장하지 못했습니다</string>
+    <string name="checkin_save_failed_body">입장 기록을 저장할 수 없습니다. 다시 시도해 주세요.</string>
+    <string name="checkin_scan_again">다른 태그 읽기</string>
+    <string name="tts_check_in_complete">입장이 완료되었습니다</string>
+
+    <!-- NFC 사용 가능 여부 -->
+    <string name="nfc_unsupported_title">NFC를 사용할 수 없습니다</string>
+    <string name="nfc_unsupported_visitor">NFC를 지원하지 않는 기기입니다. 매장에 다른 입장 방법을 문의해 주세요.</string>
+    <string name="nfc_unsupported_owner">NFC를 지원하지 않는 기기라 태그를 만들 수 없습니다.</string>
+    <string name="nfc_disabled_title">NFC가 꺼져 있습니다</string>
+    <string name="nfc_disabled_body">CV-PASS 태그를 읽고 쓰려면 NFC를 켜 주세요.</string>
+    <string name="nfc_open_settings">NFC 설정 열기</string>
+
+    <!-- 매장 등록 -->
+    <string name="owner_setup_title">매장 등록</string>
+    <string name="owner_setup_intro">사업자등록증에 적힌 정보를 입력해 주세요.</string>
+    <string name="field_business_number">사업자등록번호</string>
+    <string name="field_business_number_hint" tools:ignore="TypographyDashes">숫자 10자리 (예: 123-45-67891)</string>
+    <string name="field_business_number_format">숫자 10자리를 모두 입력해 주세요.</string>
+    <string name="field_business_number_checksum">올바르지 않은 번호입니다. 오타가 없는지 확인해 주세요.</string>
+    <string name="field_representative">대표자명</string>
+    <string name="field_representative_error">등록된 대표자명을 입력해 주세요.</string>
+    <string name="field_opening_date">개업일자</string>
+    <string name="field_opening_date_error">사업자등록증에 적힌 개업일자를 선택해 주세요.</string>
+    <string name="field_venue_name">방문자에게 보일 매장 이름</string>
+    <plurals name="field_venue_name_error">
+        <item quantity="other">%d자 이내로 입력해 주세요.</item>
+    </plurals>
+    <string name="owner_setup_submit">확인하고 계속</string>
+    <string name="owner_setup_submit_local">계속</string>
+    <string name="owner_setup_submitting">국세청에서 확인하는 중…</string>
+    <string name="owner_setup_nts_on">입력한 정보는 국세청을 통해 확인합니다.</string>
+    <string name="owner_setup_nts_off">국세청 API 키가 설정되지 않아 사업자등록번호의 검증 번호만 확인하며, 매장은 미확인 상태로 표시됩니다.</string>
+    <string name="owner_rejected_title">사업자 정보를 확인하지 못했습니다</string>
+    <string name="owner_rejected_not_matched">국세청 정보와 일치하지 않습니다. 대표자명과 개업일자를 확인해 주세요.</string>
+    <string name="owner_rejected_service_message">국세청 응답: %1$s</string>
+    <string name="owner_rejected_invalid_key">설정된 국세청 API 키가 거부되었습니다.</string>
+    <string name="owner_rejected_network">국세청 서비스에 연결할 수 없습니다. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.</string>
+    <string name="owner_rejected_unexpected">국세청 서비스에서 예상하지 못한 응답을 받았습니다. 잠시 후 다시 시도해 주세요.</string>
+
+    <!-- 매장 현황 -->
+    <string name="owner_dashboard_title">내 매장</string>
+    <string name="owner_verified_badge">국세청 확인 완료</string>
+    <string name="owner_unverified_badge">국세청 미확인 (API 키 없음)</string>
+    <string name="owner_today_visitors">오늘 방문자</string>
+    <string name="owner_count_error">방문자 수를 불러올 수 없습니다.</string>
+    <string name="owner_write_tag">NFC 태그 만들기</string>
+    <string name="owner_write_tag_hint">NTAG213·215·216 스티커 같은 NFC 태그에 매장 정보를 기록한 뒤 출입구에 붙여 주세요.</string>
+    <string name="owner_write_waiting">휴대폰 뒷면에 태그를 대 주세요…</string>
+    <string name="owner_write_success">태그를 만들었습니다. 출입구에 붙여 주세요.</string>
+    <string name="owner_write_read_only">읽기 전용 태그입니다.</string>
+    <plurals name="owner_write_too_small">
+        <item quantity="other">태그 용량이 부족합니다. %1$d바이트가 필요하지만 %2$d바이트만 저장할 수 있습니다.</item>
+    </plurals>
+    <string name="owner_write_unsupported">NDEF 데이터를 저장할 수 없는 태그입니다.</string>
+    <string name="owner_write_lost">기록이 끝나기 전에 태그가 멀어졌습니다. 다시 시도해 주세요.</string>
+    <string name="owner_write_failed">태그를 기록하지 못했습니다. 태그를 움직이지 말고 다시 시도해 주세요.</string>
+    <string name="owner_change_venue">매장 변경</string>
+    <string name="owner_change_venue_confirm_title">매장을 변경할까요?</string>
+    <string name="owner_change_venue_confirm_body">매장을 다시 등록해야 합니다. 이미 만든 태그는 계속 사용할 수 있습니다.</string>
+
+    <!-- 역학조사관 -->
+    <string name="inspector_title">역학조사관</string>
+    <string name="inspector_gate_intro">출입 기록을 보려면 조사관 코드를 입력해 주세요.</string>
+    <string name="inspector_gate_demo_note">데모용 확인 절차입니다. 코드가 앱에 포함되어 있어 실제 접근 통제 수단이 아닙니다.</string>
+    <string name="field_inspector_code">조사관 코드</string>
+    <string name="inspector_code_error">코드가 올바르지 않습니다.</string>
+    <string name="inspector_unlock">확인</string>
+    <string name="inspector_disabled">INSPECTOR_PIN이 설정되지 않아 이 빌드에서는 조사관 모드를 사용할 수 없습니다.</string>
+    <string name="field_log_date">날짜</string>
+    <string name="inspector_search">조회</string>
+    <string name="inspector_reveal_hint">항목을 누르면 전체 정보를 볼 수 있습니다.</string>
+    <plurals name="inspector_result_count">
+        <item quantity="other">방문자 %d명</item>
+    </plurals>
+    <string name="inspector_empty">이 날짜에 이 매장의 출입 기록이 없습니다.</string>
+    <string name="inspector_load_failed">출입 기록을 불러오지 못했습니다.</string>
+    <string name="inspector_details_title">출입 기록 상세</string>
+    <string name="inspector_detail_name">이름</string>
+    <string name="inspector_detail_phone">휴대폰 번호</string>
+    <string name="inspector_detail_time">시간</string>
+    <string name="inspector_detail_venue">매장</string>
+</resources>
