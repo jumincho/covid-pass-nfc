@@ -1,0 +1,43 @@
+name: Screenshots
+
+# Records the README screenshots with Roborazzi (Robolectric) and commits any changes to the
+# branch the workflow was started on. Run it by hand after changing the UI.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: screenshots-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  record:
+    name: Record screenshots
+    if: github.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Record screenshots
+        run: ./gradlew --no-daemon :app:recordRoborazziDebug
+
+      - name: Commit changed screenshots
+        run: |
+          git add docs/screenshots
+          if git diff --cached --quiet; then
+            echo "The screenshots are up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update screenshots" -m "Recorded by the Screenshots workflow with Roborazzi."
+          git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"
