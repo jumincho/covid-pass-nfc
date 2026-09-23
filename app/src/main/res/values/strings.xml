@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Phone and business number examples use hyphens, not dashes, so TypographyDashes is ignored on them. -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name" translatable="false">CV-PASS</string>
+    <string name="app_tagline">Contactless entry logs with NFC</string>
+
+    <!-- Common actions -->
+    <string name="action_back">Back</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_close">Close</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="action_done">Done</string>
+    <string name="action_retry">Try again</string>
+    <string name="action_save">Save</string>
+    <string name="action_select_date">Choose date</string>
+
+    <!-- Home -->
+    <string name="home_choose_role">How are you using CV-PASS?</string>
+    <string name="role_visitor_title">Visitor</string>
+    <string name="role_visitor_description">Show your vaccination pass and check in by tapping a venue’s NFC tag.</string>
+    <string name="role_owner_title">Venue owner</string>
+    <string name="role_owner_description">Verify your business and set up the tag at your entrance.</string>
+    <string name="role_inspector_title">Inspector</string>
+    <string name="role_inspector_description">Look up a venue’s visitor log for contact tracing.</string>
+    <string name="home_visitor_no_profile">Not set up yet</string>
+    <string name="home_visitor_no_pass">No vaccination pass verified</string>
+    <string name="home_owner_no_venue">No venue registered</string>
+    <string name="home_storage_device">Check-ins are stored on this device.</string>
+    <string name="home_storage_firestore">Check-ins are stored in the Firebase project %1$s.</string>
+    <string name="home_tax_service_on">Businesses are verified with the National Tax Service.</string>
+    <string name="home_tax_service_off">Businesses are checked locally only (no National Tax Service key).</string>
+
+    <!-- Visitor details -->
+    <string name="onboarding_title">Your details</string>
+    <string name="onboarding_intro">Venues log your name and mobile number when you check in so that contact tracers can reach you.</string>
+    <string name="field_name">Name</string>
+    <string name="field_name_error">Enter your name as it appears on your vaccination certificate.</string>
+    <string name="field_phone">Mobile number</string>
+    <string name="field_phone_placeholder" translatable="false">010-1234-5678</string>
+    <string name="field_phone_error" tools:ignore="TypographyDashes">Enter a Korean mobile number, for example 010-1234-5678.</string>
+    <string name="onboarding_privacy">Check-ins are deleted after 28 days. Certificate images are read on this device and never stored.</string>
+    <string name="onboarding_name_change_note">Changing your name removes your verified pass; you will need to verify your certificate again.</string>
+
+    <!-- Vaccination pass -->
+    <string name="pass_title">Vaccination pass</string>
+    <string name="pass_card_label">COVID-19 vaccination pass</string>
+    <string name="pass_status_valid">Valid</string>
+    <string name="pass_status_pending">Valid from %1$s</string>
+    <string name="pass_status_none">Not verified</string>
+    <string name="pass_status_invalid">Not valid</string>
+    <plurals name="pass_days_remaining">
+        <item quantity="one">%d day to go</item>
+        <item quantity="other">%d days to go</item>
+    </plurals>
+    <plurals name="pass_doses">
+        <item quantity="one">%d dose</item>
+        <item quantity="other">%d doses</item>
+    </plurals>
+    <string name="pass_booster">including a booster</string>
+    <string name="pass_last_dose">Last dose on %1$s</string>
+    <string name="pass_verified_on">Verified on %1$s</string>
+    <string name="pass_verify_action">Verify certificate</string>
+    <string name="pass_reverify_action">Verify again</string>
+    <string name="pass_check_in_action">Check in</string>
+    <string name="pass_edit_profile">Edit details</string>
+    <string name="pass_verify_hint">Choose a screenshot of your vaccination certificate from the COOV app. It is read on this device and not stored.</string>
+    <string name="pass_rule_note">A pass is valid 14 days after the primary series is complete (two doses, or one of Janssen), or from the day of a booster.</string>
+    <string name="pass_reading">Reading your certificate…</string>
+    <string name="pass_accepted_valid">Certificate verified. Your pass is valid.</string>
+    <string name="pass_accepted_pending">Certificate verified. Your pass becomes valid on %1$s.</string>
+    <string name="pass_rejected_title">Certificate not accepted</string>
+    <string name="pass_reason_name_not_found">Your name (%1$s) could not be found on the certificate.</string>
+    <string name="pass_reason_name_mismatch">The certificate is for %1$s, not %2$s.</string>
+    <string name="pass_reason_no_dose">No dose number, such as “2차 접종”, could be read.</string>
+    <string name="pass_reason_no_date">No vaccination date could be read.</string>
+    <plurals name="pass_reason_incomplete">
+        <item quantity="one">The certificate shows %1$d of the %2$d dose the primary series needs.</item>
+        <item quantity="other">The certificate shows %1$d of the %2$d doses the primary series needs.</item>
+    </plurals>
+    <string name="pass_read_failed">The image could not be read. Try another screenshot.</string>
+    <string name="pass_tip">Use a sharp screenshot that shows your name, the dose number and the vaccination date.</string>
+    <string name="pass_recent_visits">Recent check-ins</string>
+    <string name="pass_no_visits">No check-ins yet.</string>
+
+    <!-- Check-in -->
+    <string name="checkin_title">Check in</string>
+    <string name="checkin_waiting_title">Hold your phone near the venue’s tag</string>
+    <string name="checkin_waiting_body">Touch the back of your phone to the CV-PASS tag at the entrance.</string>
+    <string name="checkin_processing">Checking in…</string>
+    <string name="checkin_success_title">Check-in complete</string>
+    <string name="checkin_success_body">%1$s at %2$s</string>
+    <string name="checkin_duplicate_title">Already checked in</string>
+    <string name="checkin_duplicate_body">You checked in at %1$s at %2$s. Taps within 10 minutes count as the same visit.</string>
+    <string name="checkin_pass_required_title">A valid pass is required</string>
+    <string name="checkin_pass_required_none">Verify your vaccination certificate before checking in.</string>
+    <string name="checkin_pass_required_pending">Your pass becomes valid on %1$s.</string>
+    <string name="checkin_pass_required_invalid">Your verified pass does not qualify for entry.</string>
+    <string name="checkin_profile_missing_title">Set up your details first</string>
+    <string name="checkin_profile_missing_body">Venues need your name and mobile number for contact tracing.</string>
+    <string name="checkin_set_up_profile">Set up details</string>
+    <string name="checkin_tag_problem_title">Tag not recognised</string>
+    <string name="checkin_tag_not_cvpass">This is not a CV-PASS venue tag.</string>
+    <string name="checkin_tag_unsupported">This tag was written by a newer version of CV-PASS. Update the app and try again.</string>
+    <string name="checkin_tag_read_failed">The tag could not be read. Hold your phone still and try again.</string>
+    <string name="checkin_save_failed_title">Check-in not saved</string>
+    <string name="checkin_save_failed_body">Your check-in could not be stored. Try again.</string>
+    <string name="checkin_scan_again">Scan another tag</string>
+    <string name="tts_check_in_complete">Check-in complete</string>
+
+    <!-- NFC availability -->
+    <string name="nfc_unsupported_title">NFC is not available</string>
+    <string name="nfc_unsupported_visitor">This device has no NFC. Ask the venue for another way to check in.</string>
+    <string name="nfc_unsupported_owner">This device has no NFC, so it cannot write tags.</string>
+    <string name="nfc_disabled_title">NFC is turned off</string>
+    <string name="nfc_disabled_body">Turn on NFC to read and write CV-PASS tags.</string>
+    <string name="nfc_open_settings">Open NFC settings</string>
+
+    <!-- Venue registration -->
+    <string name="owner_setup_title">Register your venue</string>
+    <string name="owner_setup_intro">Enter the details on your business registration certificate (사업자등록증).</string>
+    <string name="field_business_number">Business registration number</string>
+    <string name="field_business_number_hint" tools:ignore="TypographyDashes">10 digits, for example 123-45-67891</string>
+    <string name="field_business_number_format">Enter all 10 digits.</string>
+    <string name="field_business_number_checksum">This number is not valid. Check for typos.</string>
+    <string name="field_representative">Representative’s name</string>
+    <string name="field_representative_error">Enter the representative’s name as registered.</string>
+    <string name="field_opening_date">Opening date</string>
+    <string name="field_opening_date_error">Choose the opening date shown on the certificate.</string>
+    <string name="field_venue_name">Venue name shown to visitors</string>
+    <plurals name="field_venue_name_error">
+        <item quantity="one">Enter a name of up to %d character.</item>
+        <item quantity="other">Enter a name of up to %d characters.</item>
+    </plurals>
+    <string name="owner_setup_submit">Verify and continue</string>
+    <string name="owner_setup_submit_local">Continue</string>
+    <string name="owner_setup_submitting">Checking with the National Tax Service…</string>
+    <string name="owner_setup_nts_on">These details will be checked with the National Tax Service.</string>
+    <string name="owner_setup_nts_off">No National Tax Service API key is configured, so only the number’s checksum is checked and the venue is marked as not verified.</string>
+    <string name="owner_rejected_title">Registration not confirmed</string>
+    <string name="owner_rejected_not_matched">The National Tax Service could not match these details. Check the representative’s name and the opening date.</string>
+    <string name="owner_rejected_service_message">Message from the service: %1$s</string>
+    <string name="owner_rejected_invalid_key">The configured National Tax Service API key was rejected.</string>
+    <string name="owner_rejected_network">The National Tax Service could not be reached. Check your connection and try again.</string>
+    <string name="owner_rejected_unexpected">The National Tax Service sent an unexpected response. Try again later.</string>
+
+    <!-- Venue dashboard -->
+    <string name="owner_dashboard_title">Your venue</string>
+    <string name="owner_verified_badge">Verified with the National Tax Service</string>
+    <string name="owner_unverified_badge">Not verified with the National Tax Service (no API key)</string>
+    <string name="owner_today_visitors">Visitors today</string>
+    <string name="owner_count_error">The visitor count is unavailable.</string>
+    <string name="owner_write_tag">Write NFC tag</string>
+    <string name="owner_write_tag_hint">Write your venue to an NFC tag, such as an NTAG213, 215 or 216 sticker, and place it at your entrance.</string>
+    <string name="owner_write_waiting">Hold a tag to the back of your phone…</string>
+    <string name="owner_write_success">Tag written. Place it at your entrance.</string>
+    <string name="owner_write_read_only">This tag is read-only.</string>
+    <plurals name="owner_write_too_small">
+        <item quantity="one">This tag is too small: it needs %1$d byte but holds %2$d.</item>
+        <item quantity="other">This tag is too small: it needs %1$d bytes but holds %2$d.</item>
+    </plurals>
+    <string name="owner_write_unsupported">This type of tag cannot store NDEF data.</string>
+    <string name="owner_write_lost">The tag moved away before writing finished. Try again.</string>
+    <string name="owner_write_failed">Writing failed. Hold the tag still and try again.</string>
+    <string name="owner_change_venue">Change venue</string>
+    <string name="owner_change_venue_confirm_title">Change venue?</string>
+    <string name="owner_change_venue_confirm_body">You will need to register again. Tags you already wrote keep working.</string>
+
+    <!-- Inspector -->
+    <string name="inspector_title">Inspector</string>
+    <string name="inspector_gate_intro">Enter the inspector code to view visitor logs.</string>
+    <string name="inspector_gate_demo_note">Demo gate: the code is built into the app, so it is not real access control.</string>
+    <string name="field_inspector_code">Inspector code</string>
+    <string name="inspector_code_error">Incorrect code.</string>
+    <string name="inspector_unlock">Unlock</string>
+    <string name="inspector_disabled">Inspector mode is disabled in this build because no INSPECTOR_PIN was configured.</string>
+    <string name="field_log_date">Date</string>
+    <string name="inspector_search">Search</string>
+    <string name="inspector_reveal_hint">Tap an entry to reveal the full details.</string>
+    <plurals name="inspector_result_count">
+        <item quantity="one">%d visitor</item>
+        <item quantity="other">%d visitors</item>
+    </plurals>
+    <string name="inspector_empty">No check-ins at this venue on this date.</string>
+    <string name="inspector_load_failed">The visitor log could not be loaded.</string>
+    <string name="inspector_details_title">Check-in details</string>
+    <string name="inspector_detail_name">Name</string>
+    <string name="inspector_detail_phone">Mobile number</string>
+    <string name="inspector_detail_time">Time</string>
+    <string name="inspector_detail_venue">Venue</string>
+</resources>

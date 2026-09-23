@@ -1,0 +1,41 @@
+rules_version = '2';
+
+// Example security rules for CV-PASS's optional Firestore backend.
+//
+// They describe what a production deployment needs, and they assume Firebase
+// Authentication, which the demo app does not implement:
+//   * visitors sign in (for example anonymously) before they may add a check-in;
+//   * inspectors carry an `inspector: true` custom claim, set by a trusted server
+//     with the Firebase Admin SDK, and are the only ones who may read visitor logs.
+// Deployed as they are, these rules reject the app's unauthenticated requests.
+//
+// Retention is enforced by a TTL policy on `expireAt` rather than by clients, e.g.:
+//   gcloud firestore fields ttls update expireAt --collection-group=checkins --enable-ttl
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isInspector() {
+      return request.auth != null && request.auth.token.inspector == true;
+    }
+
+    function isValidCheckIn(data) {
+      let fields = ['visitorName', 'phone', 'venueName', 'checkedInAt', 'date', 'expireAt'];
+      return data.keys().hasOnly(fields)
+        && data.keys().hasAll(fields)
+        && data.visitorName is string && data.visitorName.size() > 0 && data.visitorName.size() <= 30
+        && data.phone is string && data.phone.matches('^01[016789][0-9]{7,8}$')
+        && data.venueName is string && data.venueName.size() > 0 && data.venueName.size() <= 30
+        && data.checkedInAt is timestamp && data.checkedInAt <= request.time + duration.value(5, 'm')
+        && data.date is string && data.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && data.expireAt is timestamp && data.expireAt == data.checkedInAt + duration.value(28, 'd');
+    }
+
+    match /venues/{venueId}/checkins/{checkInId} {
+      allow create: if request.auth != null
+        && venueId.matches('^[0-9]{10}$')
+        && isValidCheckIn(request.resource.data);
+      allow read: if isInspector();
+      allow update, delete: if false;
+    }
+  }
+}
