@@ -1,5 +1,7 @@
 <div align="center">
 
+🇺🇸 **English** | 🇨🇳 [简体中文](README.zh-CN.md) | 🇭🇰 [繁體中文](README.zh-HK.md) | 🇯🇵 [日本語](README.ja.md) | 🇰🇷 [한국어](README.ko.md)
+
 <img src="app/src/main/ic_main-playstore.png" alt="CV-PASS logo" width="96" />
 
 # CV-PASS
