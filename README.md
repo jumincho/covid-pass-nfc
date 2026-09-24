@@ -21,14 +21,14 @@ tracing, and from late 2021 visitors also had to show proof of vaccination. In p
 meant handwritten sign-in sheets and QR codes: slow at the door, and full of names and phone
 numbers left in the open.
 
-CV-PASS, a 2021 student project, replaced that with NFC. A venue sticks a tag at its
-entrance; a visitor taps it with their phone, and the app checks their vaccination pass and
-logs the visit. Contact tracers can later look up who was at a venue on a given day.
+CV-PASS replaces that with NFC. A venue sticks a tag at its entrance; a visitor taps it with
+their phone, and the app checks their vaccination pass and logs the visit. Contact tracers can
+later look up who was at a venue on a given day.
 
-This repository is a full rebuild of that project in Kotlin and Jetpack Compose. It keeps the
-idea and the three roles, and redoes the engineering: on-device OCR instead of a cloud API key
-in the app, a versioned tag format, testable pure-Kotlin domain logic, and privacy defaults.
-It runs out of the box without any keys; real backends are switched on through configuration.
+The app is built with Kotlin and Jetpack Compose on a unit-tested, pure-Kotlin domain core:
+certificates are read on the device, venue tags use a versioned format, and the defaults favour
+privacy. It runs out of the box without any keys; real backends are switched on through
+configuration.
 
 ## Features
 
@@ -262,8 +262,8 @@ by a custom claim set from a trusted server, no client updates or deletes, and a
 
 The NFC, ML Kit, text-to-speech and Firestore adapters are thin wrappers around platform APIs
 and have no automated tests; they need a device with the corresponding hardware and services.
-This rebuild is verified by the unit tests, lint and builds above; it has not yet been
-exercised end to end on a physical device with NFC tags.
+The app is verified by the unit tests, lint and builds above; it has not yet been exercised
+end to end on a physical device with NFC tags.
 
 ## Privacy and security
 
@@ -285,13 +285,10 @@ exercised end to end on a physical device with NFC tags.
   own QR verification is not implemented. The pass check shows the flow, not a trustworthy
   credential check.
 
-## Project history
+## Award and team
 
-CV-PASS started as a team project at Jeonbuk National University (JBNU) in 2021 and received
-the **silver award at the 2021 JBNU CS Student Project Competition** (November 26, 2021). The
-original app was written in Java with one activity per screen, used the Google Cloud Vision
-API for OCR, and wrote the business number and owner's name to tags as plain text. This
-repository was rebuilt from scratch in 2026; the launcher icon's artwork is the original.
+CV-PASS is a team project from Jeonbuk National University (JBNU). It received the **silver
+award at the 2021 JBNU CS Student Project Competition** (November 26, 2021).
 
 | Affiliation | Role | Name | Responsibility |
 | --- | --- | --- | --- |
@@ -300,21 +297,10 @@ repository was rebuilt from scratch in 2026; the launcher icon's artwork is the 
 | JBNU | Member | Jeong Jaeyoung | Development / Design |
 | JBNU | Member | Cho Jumin | Presentation / Design |
 
-- Demo video: [2021 JBNU CS Student Project Competition (YouTube)](https://www.youtube.com/watch?v=LHE4dr8aTKQ&list=PLFAjt9goCKzyHfSKoV9AnDuxl1U9w1mLL&index=13)
+- Competition presentation: [2021 JBNU CS Student Project Competition (YouTube)](https://www.youtube.com/watch?v=LHE4dr8aTKQ&list=PLFAjt9goCKzyHfSKoV9AnDuxl1U9w1mLL&index=13)
 - Slides: [`docs/presentation.pptx`](docs/presentation.pptx)
-
-Screenshots of the **original 2021 app** (not the rebuilt UI):
-
-<table>
-<tr>
-<td><img src="https://user-images.githubusercontent.com/93726941/176481050-1c6acb2c-4d15-4c1f-a039-8b3b74251569.png" width="240" alt="Original 2021 CV-PASS screen 1" /></td>
-<td><img src="https://user-images.githubusercontent.com/93726941/176481320-b1f82186-2de0-43a9-8df7-b73973614fa4.png" width="240" alt="Original 2021 CV-PASS screen 2" /></td>
-<td><img src="https://user-images.githubusercontent.com/93726941/176481365-d3fd1e10-963b-418b-be95-9d7654d9dda3.png" width="240" alt="Original 2021 CV-PASS screen 3" /></td>
-</tr>
-</table>
 
 ## License
 
 The source code is released under the [MIT License](LICENSE). The presentation slides
-(`docs/presentation.pptx`) and the screenshots of the original 2021 app remain jointly owned
-by the team.
+(`docs/presentation.pptx`) remain jointly owned by the team.

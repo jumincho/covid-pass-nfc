@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Navy of the original CV-PASS launcher icon. -->
+    <!-- Navy of the CV-PASS launcher icon. -->
     <color name="ic_main_background">#FF002C7A</color>
     <color name="window_background_light">#FFFAF9FF</color>
     <color name="window_background_dark">#FF121318</color>

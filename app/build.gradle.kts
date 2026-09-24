@@ -35,8 +35,8 @@ android {
         applicationId = "com.jumincho.cvpass"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 2
-        versionName = "2.0.0"
+        versionCode = 1
+        versionName = "1.0.0"
 
         buildConfigField("String", "BUSINESS_API_KEY", javaString(setting("BUSINESS_API_KEY")))
         buildConfigField("String", "FIREBASE_PROJECT_ID", javaString(setting("FIREBASE_PROJECT_ID")))

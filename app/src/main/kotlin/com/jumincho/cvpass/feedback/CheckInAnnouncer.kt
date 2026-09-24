@@ -14,8 +14,8 @@ import com.jumincho.cvpass.R
 import java.util.Locale
 
 /**
- * Confirms a check-in the way the original app did: a short vibration and a spoken
- * "입장이 완료되었습니다" — or "Check-in complete" when the device is not set to Korean.
+ * Confirms a check-in with a short vibration and a spoken "입장이 완료되었습니다" — or
+ * "Check-in complete" when the device is not set to Korean.
  */
 class CheckInAnnouncer(private val context: Context) {
 
