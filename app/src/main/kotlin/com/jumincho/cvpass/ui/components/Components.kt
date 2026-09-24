@@ -63,7 +63,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
 
-/** The CV-PASS mark from the original launcher icon, drawn so that it scales cleanly. */
+/** The CV-PASS mark from the launcher icon, drawn so that it scales cleanly. */
 @Composable
 fun CvPassLogo(modifier: Modifier = Modifier, size: Dp = 64.dp) {
     Box(

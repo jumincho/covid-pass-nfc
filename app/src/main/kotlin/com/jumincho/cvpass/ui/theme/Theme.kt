@@ -11,7 +11,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-/** Navy and blue of the original 2021 launcher icon. */
+/** Navy and blue of the launcher icon. */
 object BrandColors {
     val Navy = Color(0xFF002C7A)
     val Blue = Color(0xFF5784FF)
