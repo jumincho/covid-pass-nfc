@@ -16,6 +16,10 @@ ij_kotlin_allow_trailing_comma_on_call_site = true
 [*.{yml,yaml}]
 indent_size = 2
 
+# Room writes the exported schemas in app/schemas with two-space indentation.
+[*.json]
+indent_size = 2
+
 [*.md]
 trim_trailing_whitespace = false
 

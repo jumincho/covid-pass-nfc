@@ -7,6 +7,9 @@ rules_version = '2';
 //   * visitors sign in (for example anonymously) before they may add a check-in;
 //   * inspectors carry an `inspector: true` custom claim, set by a trusted server
 //     with the Firebase Admin SDK, and are the only ones who may read visitor logs.
+//     The venue dashboard's live visitor count reads the log too, so owners see it
+//     as unavailable; a deployment would give them, for example, a per-venue
+//     counter maintained by the server.
 // Deployed as they are, these rules reject the app's unauthenticated requests.
 //
 // Retention is enforced by a TTL policy on `expireAt` rather than by clients, e.g.:
@@ -18,12 +21,13 @@ service cloud.firestore {
       return request.auth != null && request.auth.token.inspector == true;
     }
 
+    // Mirrors the app's own validation: PersonName, PhoneNumber and VenueTag in :core.
     function isValidCheckIn(data) {
       let fields = ['visitorName', 'phone', 'venueName', 'checkedInAt', 'date', 'expireAt'];
       return data.keys().hasOnly(fields)
         && data.keys().hasAll(fields)
-        && data.visitorName is string && data.visitorName.size() > 0 && data.visitorName.size() <= 30
-        && data.phone is string && data.phone.matches('^01[016789][0-9]{7,8}$')
+        && data.visitorName is string && data.visitorName.size() >= 2 && data.visitorName.size() <= 30
+        && data.phone is string && data.phone.matches('^(010[0-9]{8}|01[16789][0-9]{7,8})$')
         && data.venueName is string && data.venueName.size() > 0 && data.venueName.size() <= 30
         && data.checkedInAt is timestamp && data.checkedInAt <= request.time + duration.value(5, 'm')
         && data.date is string && data.date.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
