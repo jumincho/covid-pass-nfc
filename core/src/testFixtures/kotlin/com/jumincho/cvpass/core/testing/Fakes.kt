@@ -93,7 +93,7 @@ class InMemoryVisitHistory : VisitHistory {
     }
 }
 
-/** In-memory [VisitorStore]. */
+/** In-memory [VisitorStore]; set [failure] to make writes throw. */
 class InMemoryVisitorStore(
     profile: VisitorProfile? = null,
     pass: VerifiedPass? = null,
@@ -104,6 +104,9 @@ class InMemoryVisitorStore(
     override val profile: Flow<VisitorProfile?> = profileState
     override val pass: Flow<VerifiedPass?> = passState
 
+    /** Thrown by every write while set. */
+    var failure: Exception? = null
+
     /** The currently saved profile. */
     val savedProfile: VisitorProfile?
         get() = profileState.value
@@ -113,14 +116,17 @@ class InMemoryVisitorStore(
         get() = passState.value
 
     override suspend fun saveProfile(profile: VisitorProfile) {
+        failure?.let { throw it }
         profileState.value = profile
     }
 
     override suspend fun savePass(pass: VerifiedPass) {
+        failure?.let { throw it }
         passState.value = pass
     }
 
     override suspend fun clearPass() {
+        failure?.let { throw it }
         passState.value = null
     }
 }

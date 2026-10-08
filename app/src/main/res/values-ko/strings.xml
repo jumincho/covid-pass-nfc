@@ -72,6 +72,7 @@
         <item quantity="other">기본접종에 필요한 %2$d회 중 %1$d회만 확인됩니다.</item>
     </plurals>
     <string name="pass_read_failed">이미지를 읽을 수 없습니다. 다른 캡처 이미지로 시도해 주세요.</string>
+    <string name="pass_save_failed">접종 증명을 저장하지 못했습니다. 다시 시도해 주세요.</string>
     <string name="pass_tip">이름, 접종 차수, 접종일이 선명하게 보이는 캡처 이미지를 사용해 주세요.</string>
     <string name="pass_recent_visits">최근 입장 기록</string>
     <string name="pass_no_visits">아직 입장 기록이 없습니다.</string>

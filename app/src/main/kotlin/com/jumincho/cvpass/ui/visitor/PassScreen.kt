@@ -296,6 +296,13 @@ private fun VerificationFeedback(verification: VerificationState, profileName: S
             modifier = modifier,
             action = dismiss,
         )
+
+        VerificationState.SaveFailed -> MessageCard(
+            body = stringResource(R.string.pass_save_failed),
+            tone = MessageTone.ERROR,
+            modifier = modifier,
+            action = dismiss,
+        )
     }
 }
 

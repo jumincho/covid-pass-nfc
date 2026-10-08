@@ -6,20 +6,18 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jumincho.cvpass.core.checkin.Visit
 import com.jumincho.cvpass.core.checkin.VisitHistory
-import com.jumincho.cvpass.core.pass.CertificateParser
 import com.jumincho.cvpass.core.pass.PassPolicy
 import com.jumincho.cvpass.core.pass.PassStatus
+import com.jumincho.cvpass.core.pass.PassVerificationResult
+import com.jumincho.cvpass.core.pass.PassVerifier
 import com.jumincho.cvpass.core.pass.VerifiedPass
 import com.jumincho.cvpass.core.visitor.VisitorProfile
 import com.jumincho.cvpass.core.visitor.VisitorStore
 import com.jumincho.cvpass.di.appContainer
-import com.jumincho.cvpass.ocr.CertificateTextReader
 import com.jumincho.cvpass.ui.WhileUiSubscribed
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.Clock
@@ -27,8 +25,10 @@ import java.time.LocalDate
 
 /** Progress of verifying a newly picked certificate. */
 sealed interface VerificationState {
+    /** No verification is in progress or being shown. */
     data object Idle : VerificationState
 
+    /** The picked image is being read. */
     data object Reading : VerificationState
 
     /** The certificate was accepted and saved; [status] is the resulting pass status. */
@@ -39,6 +39,9 @@ sealed interface VerificationState {
 
     /** The image could not be read at all. */
     data object ReadFailed : VerificationState
+
+    /** The certificate was accepted, but the pass could not be saved. */
+    data object SaveFailed : VerificationState
 }
 
 /** Everything the pass screen shows. */
@@ -53,13 +56,13 @@ data class PassUiState(
 )
 
 /**
- * Shows the visitor's pass and verifies certificates: the picked image is read on the
- * device, parsed, and checked against [PassPolicy]. Only the derived record is saved.
+ * Shows the visitor's pass and verifies newly picked certificates with [PassVerifier], which
+ * reads the image on the device and saves only the facts derived from it.
  */
 class PassViewModel(
-    private val store: VisitorStore,
+    store: VisitorStore,
     visits: VisitHistory,
-    private val reader: CertificateTextReader,
+    private val verifier: PassVerifier,
     private val clock: Clock,
 ) : ViewModel() {
 
@@ -82,7 +85,13 @@ class PassViewModel(
         if (verification.value == VerificationState.Reading) return
         verification.value = VerificationState.Reading
         viewModelScope.launch {
-            verification.value = verify(imageUri)
+            verification.value = when (val result = verifier.verify(imageUri)) {
+                is PassVerificationResult.Accepted -> VerificationState.Accepted(result.status)
+                is PassVerificationResult.Rejected -> VerificationState.Rejected(result.reason)
+                is PassVerificationResult.Unreadable -> VerificationState.ReadFailed
+                is PassVerificationResult.Failed -> VerificationState.SaveFailed
+                PassVerificationResult.ProfileMissing -> VerificationState.Idle // The pass screen needs a profile to open.
+            }
         }
     }
 
@@ -91,31 +100,13 @@ class PassViewModel(
         verification.value = VerificationState.Idle
     }
 
-    private suspend fun verify(imageUri: String): VerificationState {
-        val profile = store.profile.first() ?: return VerificationState.Idle
-        val text = try {
-            reader.read(imageUri)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            return VerificationState.ReadFailed
-        }
-        val today = LocalDate.now(clock)
-        val certificate = CertificateParser.parse(text, profile.name, today)
-        val status = PassPolicy.evaluate(certificate, profile.name, today)
-        if (status is PassStatus.Invalid) return VerificationState.Rejected(status.reason)
-        val record = certificate.toRecord() ?: return VerificationState.ReadFailed
-        store.savePass(VerifiedPass(record, clock.instant()))
-        return VerificationState.Accepted(status)
-    }
-
     companion object {
         private const val RECENT_VISITS = 5
 
         val Factory = viewModelFactory {
             initializer {
                 val container = appContainer
-                PassViewModel(container.visitorStore, container.visits, container.certificateReader, container.clock)
+                PassViewModel(container.visitorStore, container.visits, container.passVerifier, container.clock)
             }
         }
     }

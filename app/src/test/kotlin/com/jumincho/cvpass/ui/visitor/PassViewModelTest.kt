@@ -1,12 +1,13 @@
 package com.jumincho.cvpass.ui.visitor
 
 import com.jumincho.cvpass.core.checkin.Visit
+import com.jumincho.cvpass.core.pass.CertificateTextReader
 import com.jumincho.cvpass.core.pass.PassStatus
+import com.jumincho.cvpass.core.pass.PassVerifier
 import com.jumincho.cvpass.core.pass.VaccinationRecord
 import com.jumincho.cvpass.core.pass.VerifiedPass
 import com.jumincho.cvpass.core.testing.InMemoryVisitHistory
 import com.jumincho.cvpass.core.testing.InMemoryVisitorStore
-import com.jumincho.cvpass.ocr.CertificateTextReader
 import com.jumincho.cvpass.testing.Fixtures
 import com.jumincho.cvpass.testing.MainDispatcherExtension
 import com.jumincho.cvpass.testing.keepCollecting
@@ -25,7 +26,7 @@ class PassViewModelTest {
     private val visits = InMemoryVisitHistory()
 
     private fun viewModel(store: InMemoryVisitorStore, reader: CertificateTextReader = CertificateTextReader { "" }) =
-        PassViewModel(store, visits, reader, clock)
+        PassViewModel(store, visits, PassVerifier(reader, store, clock), clock)
 
     @Test
     fun `evaluates the stored pass for today`() = runTest {
@@ -108,10 +109,21 @@ class PassViewModelTest {
     }
 
     @Test
+    fun `a pass that cannot be saved is reported`() = runTest {
+        val store = InMemoryVisitorStore(Fixtures.visitor).apply { failure = IOException("disk full") }
+        val viewModel = viewModel(store) { "홍길동\n2차 접종\n접종일 2021.09.01" }
+        keepCollecting(viewModel.state)
+
+        viewModel.onCertificatePicked("content://picked/5")
+
+        assertEquals(VerificationState.SaveFailed, viewModel.state.value.verification)
+    }
+
+    @Test
     fun `the result can be dismissed`() = runTest {
         val viewModel = viewModel(InMemoryVisitorStore(Fixtures.visitor)) { "" }
         keepCollecting(viewModel.state)
-        viewModel.onCertificatePicked("content://picked/5")
+        viewModel.onCertificatePicked("content://picked/6")
 
         viewModel.dismissVerification()
 

@@ -11,6 +11,7 @@ import com.jumincho.cvpass.core.checkin.CheckInRepository
 import com.jumincho.cvpass.core.checkin.CheckInService
 import com.jumincho.cvpass.core.checkin.VisitHistory
 import com.jumincho.cvpass.core.inspector.InspectorGate
+import com.jumincho.cvpass.core.pass.PassVerifier
 import com.jumincho.cvpass.core.venue.VenueRegistrar
 import com.jumincho.cvpass.core.venue.VenueStore
 import com.jumincho.cvpass.core.visitor.VisitorStore
@@ -23,7 +24,6 @@ import com.jumincho.cvpass.data.local.LocalVisitHistory
 import com.jumincho.cvpass.data.preferences.PreferencesVenueStore
 import com.jumincho.cvpass.data.preferences.PreferencesVisitorStore
 import com.jumincho.cvpass.data.preferences.createPreferencesDataStore
-import com.jumincho.cvpass.ocr.CertificateTextReader
 import com.jumincho.cvpass.ocr.MlKitCertificateTextReader
 import okhttp3.OkHttpClient
 import java.time.Clock
@@ -69,9 +69,9 @@ class AppContainer(context: Context, val config: AppConfig) {
         VenueRegistrar(config.businessApiKey.takeIf { it.isNotBlank() }?.let { NtsBusinessRegistry(it, httpClient) })
     }
 
-    val inspectorGate: InspectorGate = InspectorGate(config.inspectorPin)
+    val passVerifier: PassVerifier by lazy { PassVerifier(MlKitCertificateTextReader(appContext), visitorStore, clock) }
 
-    val certificateReader: CertificateTextReader by lazy { MlKitCertificateTextReader(appContext) }
+    val inspectorGate: InspectorGate = InspectorGate(config.inspectorPin)
 }
 
 /** The running app's [AppContainer], for `viewModelFactory { initializer { … } }` blocks. */

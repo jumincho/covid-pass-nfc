@@ -78,6 +78,7 @@
         <item quantity="other">The certificate shows %1$d of the %2$d doses the primary series needs.</item>
     </plurals>
     <string name="pass_read_failed">The image could not be read. Try another screenshot.</string>
+    <string name="pass_save_failed">Your pass could not be saved. Try again.</string>
     <string name="pass_tip">Use a sharp screenshot that shows your name, the dose number and the vaccination date.</string>
     <string name="pass_recent_visits">Recent check-ins</string>
     <string name="pass_no_visits">No check-ins yet.</string>
