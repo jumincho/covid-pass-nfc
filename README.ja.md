@@ -1,6 +1,6 @@
 <div align="center">
 
-🇺🇸 [English](README.md) | 🇨🇳 [简体中文](README.zh-CN.md) | 🇭🇰 [繁體中文](README.zh-HK.md) | 🇯🇵 **日本語** | 🇰🇷 [한국어](README.ko.md)
+🇺🇸 [English](README.md) | 🇰🇷 [한국어](README.ko.md) | 🇨🇳 [简体中文](README.zh-CN.md) | 🇭🇰 [繁體中文](README.zh-HK.md) | 🇯🇵 **日本語**
 
 <img src="app/src/main/ic_main-playstore.png" alt="CV-PASS のロゴ" width="96" />
 
@@ -98,8 +98,8 @@ flowchart LR
     end
     subgraph core [":core — 純粋な Kotlin/JVM"]
         Domain["BusinessNumber, PhoneNumber,<br/>CertificateParser, PassPolicy,<br/>VenueTagCodec, Masking"]
-        Rules["CheckInService, DuplicateCheckInRule,<br/>RetentionPolicy, VenueRegistrar"]
-        Ports["ポート：CheckInRepository、VisitHistory、<br/>VisitorStore、VenueStore、BusinessRegistry"]
+        Rules["CheckInService, PassVerifier,<br/>VenueRegistrar, DuplicateCheckInRule,<br/>RetentionPolicy"]
+        Ports["ポート：CheckInRepository、VisitHistory、<br/>VisitorStore、VenueStore、BusinessRegistry、<br/>CertificateTextReader"]
         NTS["NtsBusinessRegistry<br/>(OkHttp + kotlinx.serialization)"]
     end
     VM --> Rules
@@ -107,9 +107,9 @@ flowchart LR
     NTS -. implements .-> Ports
 ```
 
-- **`:core`** には重要なルールがすべて入っており、Android に依存しないため、テストが速く、コードも読みやすくなっています。生成された時点で有効であることが保証される値クラス、例外の代わりに使う sealed 型の結果、そしてストレージと国税庁への照会のためのインターフェース（「ポート」）で構成されています。
-- **`:app`** は、型安全な Navigation を使うシングルアクティビティの Compose アプリです。画面は ViewModel から受け取るイミュータブルな UI 状態を描画し（単方向データフロー）、ViewModel は `:core` の型と小さなインターフェースだけに依存するので、フェイクを使って単体テストできます。NFC、ML Kit、テキスト読み上げ、Room、DataStore、Firestore といった Android のサービスは、薄いアダプターの背後に置いています。
-- **依存性の注入**は手動です。`Application` 内の `AppContainer` がすべてを一度だけ組み立て、ViewModel は `viewModelFactory { initializer { … } }` で生成します。
+- **`:core`** には重要なルールがすべて入っており、Android に依存しないため、テストが速く、コードも読みやすくなっています。生成された時点で有効であることが保証される値クラス、例外の代わりに使う sealed 型の結果、フローごとに1つずつあるユースケース（`CheckInService`、`PassVerifier`、`VenueRegistrar`）、そしてストレージ、テキスト認識、国税庁への照会のためのインターフェース（「ポート」）で構成されています。
+- **`:app`** は、型安全な Navigation を使うシングルアクティビティの Compose アプリです。画面とその ViewModel は `ui/` の下に役割ごと（ホーム、来店者、チェックイン、店舗オーナー、調査員）にまとめられ、共通コンポーネントとテーマも同じ場所にあります。各画面は ViewModel から受け取る1つのイミュータブルな UI 状態を描画し（単方向データフロー）、ViewModel は `:core` の型と小さなインターフェースだけに依存するので、フェイクを使って単体テストできます。NFC、ML Kit、テキスト読み上げ、Room、DataStore、Firestore といった Android のサービスは、`nfc/`、`ocr/`、`feedback/`、`data/` にある薄いアダプターの背後に置いています。
+- **依存性の注入**は手動です。`Application` が保持する `di/` の `AppContainer` がすべてを一度だけ組み立て、ViewModel は `viewModelFactory { initializer { … } }` で生成します。
 
 ## 技術スタック
 
@@ -136,23 +136,25 @@ covid-pass-nfc/
 │   ├── schemas/                           エクスポートした Room スキーマ
 │   └── src/
 │       ├── main/kotlin/com/jumincho/cvpass/
-│       │   ├── AppConfig.kt, AppContainer.kt, CvPassApplication.kt, MainActivity.kt
-│       │   ├── data/local/                Room データベースとリポジトリ
+│       │   ├── CvPassApplication.kt       AppContainer を保持する Application
+│       │   ├── MainActivity.kt            店舗タグのインテントを受け取る唯一のアクティビティ
+│       │   ├── di/                        AppContainer（手動 DI）と AppConfig
+│       │   ├── data/local/                Room データベース、DAO、リポジトリ
 │       │   ├── data/preferences/          DataStore によるストア
 │       │   ├── data/firebase/             オプションの Firestore リポジトリ
-│       │   ├── nfc/                       リーダーモード、タグの読み書き
+│       │   ├── nfc/                       リーダーモード、NFC の利用可否、タグの読み書き
 │       │   ├── ocr/                       ML Kit による接種証明書の読み取り
 │       │   ├── feedback/                  テキスト読み上げとバイブレーション
-│       │   └── ui/                        画面、ViewModel、テーマ、ナビゲーション
+│       │   └── ui/                        役割ごとの画面と ViewModel、共通コンポーネント、テーマ、ナビゲーション
 │       ├── main/res/                      英語と韓国語の文字列、アイコン
 │       └── test/                          ViewModel のテストと Robolectric の画面テスト
 ├── core/                                  純粋な Kotlin のドメインモジュール
 │   └── src/
 │       ├── main/kotlin/com/jumincho/cvpass/core/
 │       │   ├── business/                  BusinessNumber、国税庁（NTS）クライアント
-│       │   ├── checkin/                   チェックインのサービスとルール
+│       │   ├── checkin/                   チェックインのサービス、重複チェックインと保存期間のルール
 │       │   ├── inspector/                 調査員ゲート
-│       │   ├── pass/                      接種証明書のパーサーとパスのポリシー
+│       │   ├── pass/                      接種証明書のパーサー、パスのポリシー、証明書の確認
 │       │   ├── privacy/                   マスキング
 │       │   ├── venue/                     タグのコーデック、店舗の登録
 │       │   └── visitor/                   電話番号、氏名、プロフィール
@@ -186,7 +188,7 @@ covid-pass-nfc/
 | `INSPECTOR_PIN` | 調査員コード。 | デバッグビルドでは `0000` を使い、リリースビルドでは調査員モードが無効になります。 |
 | `FIREBASE_PROJECT_ID`、`FIREBASE_APPLICATION_ID`、`FIREBASE_API_KEY` | 共有の来店記録としての Cloud Firestore。値は Firebase プロジェクトの Android アプリの設定から取得します。アプリは `FirebaseOptions` で Firebase を初期化するため、`google-services.json` は不要です。 | チェックインは端末上の Room データベースに保存されます。3つのキーをすべて設定する必要があります。 |
 
-Firestore を使う場合、チェックインは `venues/{businessNumber}/checkins/{id}` に、`visitorName`、`phone`、`venueName`、`checkedInAt`、`date`（`yyyy-MM-dd`、日ごとの照会用）、`expireAt` のフィールドで保存されます。アプリは Firebase Authentication を実装していないため、認証なしのアクセスを許可するルールでしか動作しません。使い捨てのテスト用プロジェクトなら許容できますが、実際のデータには向きません。[`firebase/firestore.rules`](firebase/firestore.rules) は、本番環境で必要になるものを示しています。認証済みの来店者は正しい形式のエントリを追加することしかできず、調査員は信頼できるサーバーが設定するカスタムクレームで識別され、クライアントからの更新や削除はできず、保存期間の管理のために `expireAt` に TTL ポリシーを設定します。
+Firestore を使う場合、チェックインは `venues/{businessNumber}/checkins/{id}` に、`visitorName`、`phone`、`venueName`、`checkedInAt`、`date`（`yyyy-MM-dd`、日ごとの照会用）、`expireAt` のフィールドで保存されます。アプリは Firebase Authentication を実装していないため、認証なしのアクセスを許可するルールでしか動作しません。使い捨てのテスト用プロジェクトなら許容できますが、実際のデータには向きません。[`firebase/firestore.rules`](firebase/firestore.rules) は、本番環境で必要になるものを示しています。認証済みの来店者は正しい形式のエントリを追加することしかできず、調査員は信頼できるサーバーが設定するカスタムクレームで識別され、クライアントからの更新や削除はできず、保存期間の管理のために `expireAt` に TTL ポリシーを設定します。このルールでは来店記録を読めるのは調査員だけなので、店舗ダッシュボードにリアルタイムで表示する来店者数には、サーバーが管理する店舗ごとのカウンターなど、別に読み取れるデータが必要になります。
 
 ## テスト
 
@@ -197,11 +199,11 @@ Firestore を使う場合、チェックインは `venues/{businessNumber}/check
 ./gradlew :app:recordRoborazziDebug  # docs/screenshots を撮り直す
 ```
 
-- **`:core`** には、事業者登録番号のチェックサム、電話番号と氏名の検証、マスキング、接種証明書のパーサー（ノイズ、改行、全角文字、さまざまな日付形式が混ざった合成 OCR テキストを多数使用）、パスのポリシーの境界条件、タグのコーデック（往復変換と不正なペイロード）、重複チェックインと保存期間のルール、チェックインのサービス、そして OkHttp MockWebServer を相手にした NTS クライアント（有効、不一致、キーの拒否、サーバーエラー、不正なレスポンス本文、タイムアウト、キャンセル）の単体テストがあります。
+- **`:core`** には、事業者登録番号のチェックサム、電話番号と氏名の検証、マスキング、接種証明書のパーサー（ノイズ、改行、全角文字、さまざまな日付形式が混ざった合成 OCR テキストを多数使用）、パスのポリシーの境界条件、タグのコーデック（往復変換と不正なペイロード）、重複チェックインと保存期間のルール、チェックイン・証明書の確認・店舗登録の3つのユースケース（保存の失敗を含む）、そして OkHttp MockWebServer を相手にした NTS クライアント（有効、不一致、キーの拒否、サーバーエラー、不正なレスポンス本文、タイムアウト、キャンセル）の単体テストがあります。
 - **`:app`** には、すべての ViewModel に対する JVM の単体テストがあり、`:core` のテストフィクスチャにあるインメモリのフェイクと kotlinx-coroutines-test で動かしています。また、サンプルデータで5つの画面を描画し、主要な内容を確認する Robolectric のテストもあります。`recordRoborazziDebug` で実行すると、同じテストで上のスクリーンショットを撮影します。Screenshots ワークフローを手動で開始すると、CI 上でこれを行い、変更された画像があればコミットします。
 - CI は、プッシュとプルリクエストのたびにテスト、lint、デバッグビルドを実行します。
 
-NFC、ML Kit、テキスト読み上げ、Firestore のアダプターはプラットフォーム API の薄いラッパーで、自動テストはありません。対応するハードウェアとサービスを備えた端末が必要です。アプリは上記の単体テスト、lint、ビルドで検証していますが、NFC タグを使った実機でのエンドツーエンドの動作確認はまだ行っていません。
+Room、DataStore、NFC、ML Kit、テキスト読み上げ、Firestore のアダプターはプラットフォーム API の薄いラッパーで、アダプター自体の自動テストはありません。ViewModel のテストでは代わりにインメモリのフェイクを使い、NFC、ML Kit、音声のアダプターには対応するハードウェアとサービスを備えた端末が必要です。アプリは上記の単体テスト、lint、ビルドで検証していますが、NFC タグを使った実機でのエンドツーエンドの動作確認はまだ行っていません。
 
 ## プライバシーとセキュリティ
 

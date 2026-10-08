@@ -1,6 +1,6 @@
 <div align="center">
 
-🇺🇸 [English](README.md) | 🇨🇳 [简体中文](README.zh-CN.md) | 🇭🇰 [繁體中文](README.zh-HK.md) | 🇯🇵 [日本語](README.ja.md) | 🇰🇷 **한국어**
+🇺🇸 [English](README.md) | 🇰🇷 **한국어** | 🇨🇳 [简体中文](README.zh-CN.md) | 🇭🇰 [繁體中文](README.zh-HK.md) | 🇯🇵 [日本語](README.ja.md)
 
 <img src="app/src/main/ic_main-playstore.png" alt="CV-PASS 로고" width="96" />
 
@@ -63,7 +63,7 @@ UI는 시스템의 밝은 테마 또는 어두운 테마를 따르고, 영어와
 | MIME `application/vnd.jumincho.cvpass.venue` | UTF-8 JSON: `{"v":1,"id":"1248100998","name":"카페 전주"}` |
 | Android Application Record | `com.jumincho.cvpass`. CV-PASS가 실행 중이 아니어도 태그에 대면 앱이 열립니다 |
 
-`v`는 페이로드의 버전을 나타냅니다. 읽는 쪽은 더 새로운 버전을 잘못 해석하지 않고 "앱을 업데이트하라"는 분명한 메시지와 함께 거부합니다. 일반적인 태그 메시지는 약 125바이트여서 짧은 매장 이름이라면 NTAG213 스티커에 들어갑니다. 앱은 기록하기 전에 모든 태그의 용량을 확인합니다.
+`v`는 페이로드의 버전을 나타냅니다. 읽는 쪽은 더 새로운 버전을 잘못 해석하는 대신 "앱을 업데이트하라"는 분명한 메시지와 함께 거부합니다. 일반적인 태그 메시지는 약 125바이트여서 짧은 매장 이름이라면 NTAG213 스티커에 들어갑니다. 앱은 기록하기 전에 모든 태그의 용량을 확인합니다.
 
 ```mermaid
 sequenceDiagram
@@ -98,8 +98,8 @@ flowchart LR
     end
     subgraph core [":core — 순수 Kotlin/JVM"]
         Domain["BusinessNumber, PhoneNumber,<br/>CertificateParser, PassPolicy,<br/>VenueTagCodec, Masking"]
-        Rules["CheckInService, DuplicateCheckInRule,<br/>RetentionPolicy, VenueRegistrar"]
-        Ports["포트: CheckInRepository, VisitHistory,<br/>VisitorStore, VenueStore, BusinessRegistry"]
+        Rules["CheckInService, PassVerifier,<br/>VenueRegistrar, DuplicateCheckInRule,<br/>RetentionPolicy"]
+        Ports["포트: CheckInRepository, VisitHistory,<br/>VisitorStore, VenueStore, BusinessRegistry,<br/>CertificateTextReader"]
         NTS["NtsBusinessRegistry<br/>(OkHttp + kotlinx.serialization)"]
     end
     VM --> Rules
@@ -107,9 +107,9 @@ flowchart LR
     NTS -. implements .-> Ports
 ```
 
-- **`:core` 모듈**은 중요한 규칙을 모두 담고 있으며 Android에 의존하지 않으므로, 테스트가 빠르고 읽기 쉽습니다. 생성되는 순간부터 유효함이 보장되는 값 클래스, 예외 대신 쓰는 sealed 결과 타입, 그리고 데이터 저장과 국세청 조회를 위한 인터페이스("포트")로 이루어져 있습니다.
-- **`:app` 모듈**은 타입 안전한 Navigation을 쓰는 단일 액티비티 Compose 앱입니다. 화면은 ViewModel이 내보내는 불변 UI 상태를 렌더링하고(단방향 데이터 흐름), ViewModel은 `:core` 타입과 작은 인터페이스에만 의존하므로 페이크로 단위 테스트합니다. NFC, ML Kit, 텍스트 음성 변환, Room, DataStore, Firestore 같은 Android 서비스는 얇은 어댑터 뒤에 있습니다.
-- **의존성 주입**은 수동으로 합니다. `Application`의 `AppContainer`가 모든 객체를 한 번만 만들고, ViewModel은 `viewModelFactory { initializer { … } }`로 생성합니다.
+- **`:core` 모듈**은 중요한 규칙을 모두 담고 있으며 Android에 의존하지 않으므로, 테스트가 빠르고 읽기 쉽습니다. 생성되는 순간부터 유효함이 보장되는 값 클래스, 예외 대신 쓰는 sealed 결과 타입, 흐름마다 하나씩 있는 유스케이스(`CheckInService`, `PassVerifier`, `VenueRegistrar`), 그리고 데이터 저장, 텍스트 인식, 국세청 조회를 위한 인터페이스("포트")로 이루어져 있습니다.
+- **`:app` 모듈**은 타입 안전한 Navigation을 쓰는 단일 액티비티 Compose 앱입니다. 화면과 ViewModel은 `ui/` 아래에 역할별(홈, 방문자, 입장, 사업주, 역학조사관)로 묶여 있고, 공통 컴포넌트와 테마도 같은 곳에 있습니다. 각 화면은 ViewModel이 내보내는 하나의 불변 UI 상태를 렌더링하고(단방향 데이터 흐름), ViewModel은 `:core` 타입과 작은 인터페이스에만 의존하므로 페이크로 단위 테스트합니다. NFC, ML Kit, 텍스트 음성 변환, Room, DataStore, Firestore 같은 Android 서비스는 `nfc/`, `ocr/`, `feedback/`, `data/`에 있는 얇은 어댑터 뒤에 있습니다.
+- **의존성 주입**은 수동으로 합니다. `Application`이 소유하는 `di/`의 `AppContainer`가 모든 객체를 한 번만 만들고, ViewModel은 `viewModelFactory { initializer { … } }`로 생성합니다.
 
 ## 기술 스택
 
@@ -136,23 +136,25 @@ covid-pass-nfc/
 │   ├── schemas/                           내보낸 Room 스키마
 │   └── src/
 │       ├── main/kotlin/com/jumincho/cvpass/
-│       │   ├── AppConfig.kt, AppContainer.kt, CvPassApplication.kt, MainActivity.kt
-│       │   ├── data/local/                Room 데이터베이스와 저장소
+│       │   ├── CvPassApplication.kt       AppContainer를 소유하는 Application
+│       │   ├── MainActivity.kt            매장 태그 인텐트를 받는 단일 액티비티
+│       │   ├── di/                        AppContainer(수동 DI)와 AppConfig
+│       │   ├── data/local/                Room 데이터베이스, DAO, 저장소
 │       │   ├── data/preferences/          DataStore 기반 저장소
 │       │   ├── data/firebase/             선택 사항인 Firestore 저장소
-│       │   ├── nfc/                       리더 모드, 태그 읽기와 쓰기
+│       │   ├── nfc/                       리더 모드, NFC 사용 가능 여부, 태그 읽기와 쓰기
 │       │   ├── ocr/                       ML Kit 접종증명서 판독기
 │       │   ├── feedback/                  텍스트 음성 변환과 진동
-│       │   └── ui/                        화면, ViewModel, 테마, 내비게이션
+│       │   └── ui/                        역할별 화면과 ViewModel, 공통 컴포넌트, 테마, 내비게이션
 │       ├── main/res/                      영어·한국어 문자열, 아이콘
 │       └── test/                          ViewModel 테스트와 Robolectric 화면 테스트
 ├── core/                                  순수 Kotlin 도메인 모듈
 │   └── src/
 │       ├── main/kotlin/com/jumincho/cvpass/core/
 │       │   ├── business/                  BusinessNumber, 국세청(NTS) 클라이언트
-│       │   ├── checkin/                   입장 처리 서비스와 규칙
+│       │   ├── checkin/                   입장 처리 서비스, 중복 입장 규칙과 보존 기간 규칙
 │       │   ├── inspector/                 조사관 코드 확인
-│       │   ├── pass/                      접종증명서 파서와 판정 규칙
+│       │   ├── pass/                      접종증명서 파서, 판정 규칙, 증명서 확인
 │       │   ├── privacy/                   마스킹
 │       │   ├── venue/                     태그 코덱, 매장 등록
 │       │   └── visitor/                   전화번호, 이름, 프로필
@@ -167,7 +169,7 @@ covid-pass-nfc/
 
 ## 시작하기
 
-**요구 사항**: JDK 17 이상, 그리고 플랫폼 36이 설치된 Android SDK가 필요합니다(최신 Android Studio를 설치하면 둘 다 설치됩니다). 입장과 태그 기록에는 Android 8.0 이상이 설치된 NFC 지원 기기가 필요합니다. NFC가 없는 기기에도 앱은 설치되며, 이 제약을 안내합니다.
+**요구 사항**: JDK 17 이상, 그리고 플랫폼 36이 설치된 Android SDK가 필요합니다(최신 Android Studio가 둘 다 설치해 줍니다). 입장과 태그 기록에는 Android 8.0 이상이 설치된 NFC 지원 기기가 필요합니다. NFC가 없는 기기에도 앱은 설치되며, 이 제약을 안내합니다.
 
 ```bash
 ./gradlew :app:assembleDebug      # app/build/outputs/apk/debug/app-debug.apk
@@ -186,7 +188,7 @@ covid-pass-nfc/
 | `INSPECTOR_PIN` | 조사관 코드. | 디버그 빌드는 `0000`을 사용하고, 릴리스 빌드에서는 조사관 모드를 사용할 수 없습니다. |
 | `FIREBASE_PROJECT_ID`, `FIREBASE_APPLICATION_ID`, `FIREBASE_API_KEY` | 공유 출입 기록으로 Cloud Firestore를 사용합니다. 값은 Firebase 프로젝트의 Android 앱 설정에서 가져옵니다. 앱이 `FirebaseOptions`로 Firebase를 초기화하므로 `google-services.json`은 필요하지 않습니다. | 입장 기록은 기기의 Room 데이터베이스에 저장됩니다. 세 키를 모두 설정해야 합니다. |
 
-Firestore를 사용하면 입장 기록은 `venues/{businessNumber}/checkins/{id}`에 `visitorName`, `phone`, `venueName`, `checkedInAt`, `date`(`yyyy-MM-dd`, 날짜별 조회용), `expireAt` 필드로 저장됩니다. 앱은 Firebase Authentication을 구현하지 않으므로 인증되지 않은 접근을 허용하는 규칙에서만 동작합니다. 버려도 되는 테스트 프로젝트라면 괜찮지만 실제 데이터에는 적합하지 않습니다. [`firebase/firestore.rules`](firebase/firestore.rules)는 프로덕션에 필요한 것을 보여 줍니다. 인증된 방문자는 형식이 올바른 항목을 추가만 할 수 있고, 역학조사관은 신뢰할 수 있는 서버가 설정한 커스텀 클레임으로 식별하며, 클라이언트의 수정과 삭제는 허용하지 않고, 보존 기간 관리를 위해 `expireAt`에 TTL 정책을 둡니다.
+Firestore를 사용하면 입장 기록은 `venues/{businessNumber}/checkins/{id}`에 `visitorName`, `phone`, `venueName`, `checkedInAt`, `date`(`yyyy-MM-dd`, 날짜별 조회용), `expireAt` 필드로 저장됩니다. 앱은 Firebase Authentication을 구현하지 않으므로 인증되지 않은 접근을 허용하는 규칙에서만 동작합니다. 버려도 되는 테스트 프로젝트라면 괜찮지만 실제 데이터에는 적합하지 않습니다. [`firebase/firestore.rules`](firebase/firestore.rules)는 프로덕션에 필요한 것을 보여 줍니다. 인증된 방문자는 형식이 올바른 항목을 추가만 할 수 있고, 역학조사관은 신뢰할 수 있는 서버가 설정한 커스텀 클레임으로 식별하며, 클라이언트의 수정과 삭제는 허용하지 않고, 보존 기간 관리를 위해 `expireAt`에 TTL 정책을 둡니다. 이 규칙에서는 역학조사관만 출입 기록을 읽을 수 있으므로, 매장 현황의 실시간 방문자 수에는 서버가 관리하는 매장별 카운터처럼 따로 읽을 수 있는 데이터가 필요합니다.
 
 ## 테스트
 
@@ -197,11 +199,11 @@ Firestore를 사용하면 입장 기록은 `venues/{businessNumber}/checkins/{id
 ./gradlew :app:recordRoborazziDebug  # docs/screenshots 다시 생성
 ```
 
-- **`:core` 모듈**에는 사업자등록번호 체크섬, 전화번호와 이름 검증, 마스킹, 접종증명서 파서(노이즈, 줄바꿈, 전각 문자, 여러 날짜 형식이 섞인 합성 OCR 텍스트 다수), 판정 규칙의 경계 조건, 태그 코덱(왕복 변환과 잘못된 페이로드), 중복 입장 규칙과 보존 기간 규칙, 입장 처리 서비스, 그리고 OkHttp MockWebServer를 상대로 한 NTS 클라이언트(유효, 불일치, 키 거부, 서버 오류, 잘못된 응답 본문, 시간 초과, 취소)에 대한 단위 테스트가 있습니다.
+- **`:core` 모듈**에는 사업자등록번호 체크섬, 전화번호와 이름 검증, 마스킹, 접종증명서 파서(노이즈, 줄바꿈, 전각 문자, 여러 날짜 형식이 섞인 합성 OCR 텍스트 다수), 판정 규칙의 경계 조건, 태그 코덱(왕복 변환과 잘못된 페이로드), 중복 입장 규칙과 보존 기간 규칙, 입장 처리·증명서 확인·매장 등록 유스케이스(저장 실패 포함), 그리고 OkHttp MockWebServer를 상대로 한 NTS 클라이언트(유효, 불일치, 키 거부, 서버 오류, 잘못된 응답 본문, 시간 초과, 취소)에 대한 단위 테스트가 있습니다.
 - **`:app` 모듈**에는 모든 ViewModel에 대한 JVM 단위 테스트가 있으며, `:core` 테스트 픽스처의 인메모리 페이크와 kotlinx-coroutines-test로 구동합니다. 또 샘플 데이터로 화면 다섯 개를 렌더링하고 핵심 내용을 확인하는 Robolectric 테스트가 있습니다. `recordRoborazziDebug`로 실행하면 같은 테스트가 위의 스크린샷을 기록합니다. Screenshots 워크플로를 수동으로 시작하면 CI에서 이 작업을 하고, 바뀐 이미지가 있으면 커밋합니다.
 - CI는 푸시와 풀 리퀘스트마다 테스트, lint, 디버그 빌드를 실행합니다.
 
-NFC, ML Kit, 텍스트 음성 변환, Firestore 어댑터는 플랫폼 API를 감싼 얇은 래퍼여서 자동화된 테스트가 없으며, 해당 하드웨어와 서비스를 갖춘 기기가 필요합니다. 앱은 위의 단위 테스트, lint, 빌드로 검증했으며, NFC 태그와 실제 기기로 처음부터 끝까지 검증한 적은 아직 없습니다.
+Room, DataStore, NFC, ML Kit, 텍스트 음성 변환, Firestore 어댑터는 플랫폼 API를 감싼 얇은 래퍼여서 어댑터 자체의 자동화된 테스트는 없습니다. ViewModel 테스트는 그 대신 인메모리 페이크를 쓰며, NFC, ML Kit, 음성 어댑터를 시험하려면 해당 하드웨어와 서비스를 갖춘 기기가 필요합니다. 앱은 위의 단위 테스트, lint, 빌드로 검증했으며, NFC 태그와 실제 기기로 처음부터 끝까지 검증한 적은 아직 없습니다.
 
 ## 개인정보 보호와 보안
 

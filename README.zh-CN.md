@@ -1,6 +1,6 @@
 <div align="center">
 
-🇺🇸 [English](README.md) | 🇨🇳 **简体中文** | 🇭🇰 [繁體中文](README.zh-HK.md) | 🇯🇵 [日本語](README.ja.md) | 🇰🇷 [한국어](README.ko.md)
+🇺🇸 [English](README.md) | 🇰🇷 [한국어](README.ko.md) | 🇨🇳 **简体中文** | 🇭🇰 [繁體中文](README.zh-HK.md) | 🇯🇵 [日本語](README.ja.md)
 
 <img src="app/src/main/ic_main-playstore.png" alt="CV-PASS 标志" width="96" />
 
@@ -18,7 +18,7 @@
 
 ## 概述
 
-COVID-19 疫情期间，韩国的每个场所都必须为流行病学调查保留出入登记记录；从 2021 年底起，访客还必须出示疫苗接种证明。实际做法就是手写签到表和二维码：门口通行缓慢，姓名和电话号码还大量暴露在外。
+COVID-19 疫情期间，韩国的每个场所都必须为流行病学调查保留出入登记记录；从 2021 年底起，访客还必须出示疫苗接种证明。实际做法是手写签到表和二维码：门口通行缓慢，还有大量姓名和电话号码暴露在外。
 
 CV-PASS 用 NFC 取代了这些做法。场所在入口处贴上一个标签；访客用手机触碰标签，应用便会检查其疫苗通行证并记录这次到访。流调人员之后可以查询某一天有哪些人到过某个场所。
 
@@ -85,7 +85,7 @@ sequenceDiagram
     App-->>Visitor: "입장이 완료되었습니다" + vibration
 ```
 
-通行证规则集中在一处：[`PassPolicy`](core/src/main/kotlin/com/jumincho/cvpass/core/pass/PassPolicy.kt)。它按照韩国 2021—22 年间实行的疫苗通行证规则建模：基础免疫（两剂，或一剂杨森疫苗）自最后一剂接种 14 天后起生效，加强针则自接种当天起生效。2022 年 1 月引入的 180 天有效期未纳入模型。
+通行证规则集中在一处：[`PassPolicy`](core/src/main/kotlin/com/jumincho/cvpass/core/pass/PassPolicy.kt)。它按照韩国 2021—2022 年间实行的疫苗通行证规则建模：基础免疫（两剂，或一剂杨森疫苗）自最后一剂接种 14 天后起生效，加强针则自接种当天起生效。2022 年 1 月引入的 180 天有效期未纳入模型。
 
 ## 架构
 
@@ -98,8 +98,8 @@ flowchart LR
     end
     subgraph core [":core — 纯 Kotlin/JVM"]
         Domain["BusinessNumber, PhoneNumber,<br/>CertificateParser, PassPolicy,<br/>VenueTagCodec, Masking"]
-        Rules["CheckInService, DuplicateCheckInRule,<br/>RetentionPolicy, VenueRegistrar"]
-        Ports["端口：CheckInRepository、VisitHistory、<br/>VisitorStore、VenueStore、BusinessRegistry"]
+        Rules["CheckInService, PassVerifier,<br/>VenueRegistrar, DuplicateCheckInRule,<br/>RetentionPolicy"]
+        Ports["端口：CheckInRepository、VisitHistory、<br/>VisitorStore、VenueStore、BusinessRegistry、<br/>CertificateTextReader"]
         NTS["NtsBusinessRegistry<br/>(OkHttp + kotlinx.serialization)"]
     end
     VM --> Rules
@@ -107,9 +107,9 @@ flowchart LR
     NTS -. implements .-> Ports
 ```
 
-- **`:core`** 包含所有关键规则，且不依赖 Android，因此测试快、易于阅读：值类在构造时即保证合法，用密封类型表示结果而不是抛出异常，存储和国税厅查询则通过接口（“端口”）完成。
-- **`:app`** 是一个单 Activity 的 Compose 应用，使用类型安全的 Navigation。页面渲染来自 ViewModel 的不可变界面状态（单向数据流）；ViewModel 只依赖 `:core` 中的类型和小型接口，因此可以借助伪对象进行单元测试。NFC、ML Kit、文字转语音、Room、DataStore 和 Firestore 等 Android 服务都隐藏在轻量的适配器之后。
-- **依赖注入**采用手动方式：`Application` 中的 `AppContainer` 一次性构建所有对象，ViewModel 则通过 `viewModelFactory { initializer { … } }` 创建。
+- **`:core`** 包含所有关键规则，且不依赖 Android，因此测试快、易于阅读：值类在构造时即保证合法，用密封类型表示结果而不是抛出异常，每个流程各有一个用例（`CheckInService`、`PassVerifier`、`VenueRegistrar`），存储、文字识别和国税厅查询则通过接口（“端口”）完成。
+- **`:app`** 是一个单 Activity 的 Compose 应用，使用类型安全的 Navigation。页面及其 ViewModel 按角色（首页、访客、签到、场所经营者、检查员）归入 `ui/`，共享组件和主题也放在这里。每个页面渲染来自其 ViewModel 的单一不可变界面状态（单向数据流）；ViewModel 只依赖 `:core` 中的类型和小型接口，因此可以借助伪对象进行单元测试。NFC、ML Kit、文字转语音、Room、DataStore 和 Firestore 等 Android 服务都隐藏在 `nfc/`、`ocr/`、`feedback/` 和 `data/` 中的轻量适配器之后。
+- **依赖注入**采用手动方式：由 `Application` 持有、位于 `di/` 的 `AppContainer` 一次性构建所有对象，ViewModel 则通过 `viewModelFactory { initializer { … } }` 创建。
 
 ## 技术栈
 
@@ -136,23 +136,25 @@ covid-pass-nfc/
 │   ├── schemas/                           导出的 Room 架构
 │   └── src/
 │       ├── main/kotlin/com/jumincho/cvpass/
-│       │   ├── AppConfig.kt, AppContainer.kt, CvPassApplication.kt, MainActivity.kt
-│       │   ├── data/local/                Room 数据库和存储库
+│       │   ├── CvPassApplication.kt       持有 AppContainer 的 Application
+│       │   ├── MainActivity.kt            唯一的 Activity，接收场所标签的 Intent
+│       │   ├── di/                        AppContainer（手动 DI）和 AppConfig
+│       │   ├── data/local/                Room 数据库、DAO 和存储库
 │       │   ├── data/preferences/          基于 DataStore 的存储
 │       │   ├── data/firebase/             可选的 Firestore 存储库
-│       │   ├── nfc/                       读卡器模式、标签读写
+│       │   ├── nfc/                       读卡器模式、NFC 可用状态、标签读写
 │       │   ├── ocr/                       基于 ML Kit 的接种证明读取器
 │       │   ├── feedback/                  文字转语音和振动
-│       │   └── ui/                        页面、ViewModel、主题、导航
+│       │   └── ui/                        按角色划分的页面和 ViewModel、共享组件、主题、导航
 │       ├── main/res/                      英文和韩文字符串、图标
 │       └── test/                          ViewModel 测试和 Robolectric 页面测试
 ├── core/                                  纯 Kotlin 领域模块
 │   └── src/
 │       ├── main/kotlin/com/jumincho/cvpass/core/
 │       │   ├── business/                  BusinessNumber、国税厅（NTS）客户端
-│       │   ├── checkin/                   签到服务和规则
+│       │   ├── checkin/                   签到服务、重复签到规则和保留期限规则
 │       │   ├── inspector/                 检查员验证关卡
-│       │   ├── pass/                      接种证明解析器和通行证规则
+│       │   ├── pass/                      接种证明解析器、通行证规则、接种证明验证
 │       │   ├── privacy/                   脱敏
 │       │   ├── venue/                     标签编解码器、场所登记
 │       │   └── visitor/                   电话号码、姓名、个人资料
@@ -186,7 +188,7 @@ covid-pass-nfc/
 | `INSPECTOR_PIN` | 检查员代码。 | 调试版本使用 `0000`；发布版本会禁用检查员模式。 |
 | `FIREBASE_PROJECT_ID`、`FIREBASE_APPLICATION_ID`、`FIREBASE_API_KEY` | 使用 Cloud Firestore 作为共享的访客记录。请从 Firebase 项目的 Android 应用设置中获取这些值；由于应用使用 `FirebaseOptions` 初始化 Firebase，因此不需要 `google-services.json`。 | 签到记录保存在设备上的 Room 数据库中。三个键必须全部设置。 |
 
-使用 Firestore 时，签到记录保存在 `venues/{businessNumber}/checkins/{id}`，字段包括 `visitorName`、`phone`、`venueName`、`checkedInAt`、`date`（`yyyy-MM-dd`，用于按天查询）和 `expireAt`。应用没有实现 Firebase Authentication，因此只能配合允许未经认证访问的规则使用——对于用完即弃的测试项目尚可接受，但不适用于真实数据。[`firebase/firestore.rules`](firebase/firestore.rules) 展示了生产环境所需的规则：经过认证的访客只能追加格式正确的记录，检查员由可信服务器设置的自定义声明来识别，客户端不能更新或删除数据，并对 `expireAt` 设置 TTL 策略以控制保留期限。
+使用 Firestore 时，签到记录保存在 `venues/{businessNumber}/checkins/{id}`，字段包括 `visitorName`、`phone`、`venueName`、`checkedInAt`、`date`（`yyyy-MM-dd`，用于按天查询）和 `expireAt`。应用没有实现 Firebase Authentication，因此只能配合允许未经认证访问的规则使用——对于用完即弃的测试项目尚可接受，但不适用于真实数据。[`firebase/firestore.rules`](firebase/firestore.rules) 展示了生产环境所需的规则：经过认证的访客只能追加格式正确的记录，检查员由可信服务器设置的自定义声明来识别，客户端不能更新或删除数据，并对 `expireAt` 设置 TTL 策略以控制保留期限。按照这些规则，只有检查员可以读取访客记录，因此场所仪表盘的实时人数需要单独的可读数据来源，例如由服务器维护的各场所计数器。
 
 ## 测试
 
@@ -197,11 +199,11 @@ covid-pass-nfc/
 ./gradlew :app:recordRoborazziDebug  # 重新生成 docs/screenshots
 ```
 
-- **`:core`** 的单元测试涵盖：营业登记号码的校验和、电话号码和姓名校验、脱敏、接种证明解析器（大量带有噪声、换行、全角字符和混合日期格式的合成 OCR 文本）、通行证规则的边界情况、标签编解码器（往返转换和格式错误的载荷）、重复签到规则和保留期限规则、签到服务，以及使用 OkHttp MockWebServer 测试的 NTS 客户端（有效、不匹配、密钥被拒、服务器错误、响应体格式错误、超时、取消）。
+- **`:core`** 的单元测试涵盖：营业登记号码的校验和、电话号码和姓名校验、脱敏、接种证明解析器（大量带有噪声、换行、全角字符和混合日期格式的合成 OCR 文本）、通行证规则的边界情况、标签编解码器（往返转换和格式错误的载荷）、重复签到规则和保留期限规则，签到、接种证明验证和场所登记这三个用例（包括存储失败的情况），以及使用 OkHttp MockWebServer 测试的 NTS 客户端（有效、不匹配、密钥被拒、服务器错误、响应体格式错误、超时、取消）。
 - **`:app`** 为每个 ViewModel 编写了 JVM 单元测试，由 `:core` 测试夹具中的内存伪对象和 kotlinx-coroutines-test 驱动；另有 Robolectric 测试，使用示例数据渲染五个页面并检查其关键内容。用 `recordRoborazziDebug` 运行时，同样的测试会生成上方的截图；Screenshots 工作流在手动启动时会在 CI 上完成这一步，并提交所有发生变化的图片。
 - 每次推送和拉取请求时，CI 都会运行测试、lint 和调试版构建。
 
-NFC、ML Kit、文字转语音和 Firestore 适配器只是对平台 API 的薄封装，没有自动化测试；它们需要配备相应硬件和服务的设备。本应用通过上述单元测试、lint 和构建进行验证；尚未在实体设备上配合 NFC 标签进行过端到端测试。
+Room、DataStore、NFC、ML Kit、文字转语音和 Firestore 适配器只是对平台 API 的薄封装，本身没有自动化测试：ViewModel 测试改用内存伪对象，而 NFC、ML Kit 和语音适配器需要配备相应硬件和服务的设备。本应用通过上述单元测试、lint 和构建进行验证；尚未在实体设备上配合 NFC 标签进行过端到端测试。
 
 ## 隐私与安全
 

@@ -1,6 +1,6 @@
 <div align="center">
 
-🇺🇸 **English** | 🇨🇳 [简体中文](README.zh-CN.md) | 🇭🇰 [繁體中文](README.zh-HK.md) | 🇯🇵 [日本語](README.ja.md) | 🇰🇷 [한국어](README.ko.md)
+🇺🇸 **English** | 🇰🇷 [한국어](README.ko.md) | 🇨🇳 [简体中文](README.zh-CN.md) | 🇭🇰 [繁體中文](README.zh-HK.md) | 🇯🇵 [日本語](README.ja.md)
 
 <img src="app/src/main/ic_main-playstore.png" alt="CV-PASS logo" width="96" />
 
@@ -129,8 +129,8 @@ flowchart LR
     end
     subgraph core [":core — pure Kotlin/JVM"]
         Domain["BusinessNumber, PhoneNumber,<br/>CertificateParser, PassPolicy,<br/>VenueTagCodec, Masking"]
-        Rules["CheckInService, DuplicateCheckInRule,<br/>RetentionPolicy, VenueRegistrar"]
-        Ports["Ports: CheckInRepository, VisitHistory,<br/>VisitorStore, VenueStore, BusinessRegistry"]
+        Rules["CheckInService, PassVerifier,<br/>VenueRegistrar, DuplicateCheckInRule,<br/>RetentionPolicy"]
+        Ports["Ports: CheckInRepository, VisitHistory,<br/>VisitorStore, VenueStore, BusinessRegistry,<br/>CertificateTextReader"]
         NTS["NtsBusinessRegistry<br/>(OkHttp + kotlinx.serialization)"]
     end
     VM --> Rules
@@ -140,13 +140,18 @@ flowchart LR
 
 - **`:core`** holds every rule that matters and has no Android dependency, so it is fast to
   test and easy to read: value classes that are valid by construction, sealed results instead
-  of exceptions, and interfaces ("ports") for storage and the tax-service lookup.
-- **`:app`** is a single-activity Compose app with type-safe Navigation. Screens render
-  immutable UI state from ViewModels (unidirectional data flow); ViewModels depend only on
-  `:core` types and small interfaces, so they are unit-tested with fakes. Android services —
-  NFC, ML Kit, text-to-speech, Room, DataStore and Firestore — sit behind thin adapters.
-- **Dependency injection** is manual: `AppContainer` in the `Application` builds everything
-  once, and ViewModels are created with `viewModelFactory { initializer { … } }`.
+  of exceptions, one use case per flow (`CheckInService`, `PassVerifier`, `VenueRegistrar`),
+  and interfaces ("ports") for storage, text recognition and the tax-service lookup.
+- **`:app`** is a single-activity Compose app with type-safe Navigation. Screens and their
+  ViewModels are grouped by role under `ui/` (home, visitor, check-in, owner, inspector), next
+  to the shared components and the theme. Each screen renders one immutable UI state from its
+  ViewModel (unidirectional data flow); ViewModels depend only on `:core` types and small
+  interfaces, so they are unit-tested with fakes. Android services — NFC, ML Kit,
+  text-to-speech, Room, DataStore and Firestore — sit behind thin adapters in `nfc/`, `ocr/`,
+  `feedback/` and `data/`.
+- **Dependency injection** is manual: `AppContainer` in `di/`, owned by the `Application`,
+  builds everything once, and ViewModels are created with
+  `viewModelFactory { initializer { … } }`.
 
 ## Tech stack
 
@@ -175,23 +180,25 @@ covid-pass-nfc/
 │   ├── schemas/                           Exported Room schema
 │   └── src/
 │       ├── main/kotlin/com/jumincho/cvpass/
-│       │   ├── AppConfig.kt, AppContainer.kt, CvPassApplication.kt, MainActivity.kt
-│       │   ├── data/local/                Room database and repositories
+│       │   ├── CvPassApplication.kt       Application that owns the AppContainer
+│       │   ├── MainActivity.kt            Single activity; receives venue-tag intents
+│       │   ├── di/                        AppContainer (manual DI) and AppConfig
+│       │   ├── data/local/                Room database, DAOs and repositories
 │       │   ├── data/preferences/          DataStore stores
 │       │   ├── data/firebase/             Optional Firestore repository
-│       │   ├── nfc/                       Reader mode, tag reading and writing
+│       │   ├── nfc/                       Reader mode, NFC availability, tag reading and writing
 │       │   ├── ocr/                       ML Kit certificate reader
 │       │   ├── feedback/                  Text-to-speech and vibration
-│       │   └── ui/                        Screens, ViewModels, theme, navigation
+│       │   └── ui/                        Screens and ViewModels by role, components, theme, navigation
 │       ├── main/res/                      English and Korean strings, icons
 │       └── test/                          ViewModel and Robolectric screen tests
 ├── core/                                  Pure Kotlin domain module
 │   └── src/
 │       ├── main/kotlin/com/jumincho/cvpass/core/
 │       │   ├── business/                  BusinessNumber, NTS client
-│       │   ├── checkin/                   Check-in service and rules
+│       │   ├── checkin/                   Check-in service, duplicate and retention rules
 │       │   ├── inspector/                 Inspector gate
-│       │   ├── pass/                      Certificate parser and pass policy
+│       │   ├── pass/                      Certificate parser, pass policy, certificate verification
 │       │   ├── privacy/                   Masking
 │       │   ├── venue/                     Tag codec, venue registration
 │       │   └── visitor/                   Phone number, name, profile
@@ -238,7 +245,9 @@ against rules that allow unauthenticated access — acceptable for a throwaway t
 for real data. [`firebase/firestore.rules`](firebase/firestore.rules) shows what production
 needs: authenticated visitors that can only append well-formed entries, inspectors identified
 by a custom claim set from a trusted server, no client updates or deletes, and a TTL policy on
-`expireAt` for retention.
+`expireAt` for retention. Under those rules only inspectors may read the log, so the venue
+dashboard's live count would need a source of its own, such as a per-venue counter that the
+server maintains.
 
 ## Testing
 
@@ -252,9 +261,10 @@ by a custom claim set from a trusted server, no client updates or deletes, and a
 - **`:core`** has unit tests for the business-number checksum, phone and name validation,
   masking, the certificate parser (many synthetic OCR texts with noise, line breaks,
   full-width characters and mixed date formats), pass-policy boundaries, the tag codec
-  (round-trips and malformed payloads), the duplicate and retention rules, the check-in
-  service, and the NTS client against OkHttp MockWebServer (valid, not matched, rejected key,
-  server error, malformed body, timeout, cancellation).
+  (round-trips and malformed payloads), the duplicate and retention rules, the check-in,
+  certificate-verification and venue-registration use cases (including storage failures), and
+  the NTS client against OkHttp MockWebServer (valid, not matched, rejected key, server error,
+  malformed body, timeout, cancellation).
 - **`:app`** has JVM unit tests for every ViewModel, driven by the in-memory fakes from
   `:core`'s test fixtures and kotlinx-coroutines-test, and Robolectric tests that render five
   screens with sample data and check their key content. Run with `recordRoborazziDebug`, the
@@ -262,10 +272,11 @@ by a custom claim set from a trusted server, no client updates or deletes, and a
   started by hand and commits any changed images.
 - CI runs the tests, lint and a debug build on every push and pull request.
 
-The NFC, ML Kit, text-to-speech and Firestore adapters are thin wrappers around platform APIs
-and have no automated tests; they need a device with the corresponding hardware and services.
-The app is verified by the unit tests, lint and builds above; it has not yet been exercised
-end to end on a physical device with NFC tags.
+The adapters — Room, DataStore, NFC, ML Kit, text-to-speech and Firestore — are thin wrappers
+around platform APIs and have no automated tests of their own: the ViewModel tests use the
+in-memory fakes instead, and the NFC, ML Kit and speech adapters need a device with the
+corresponding hardware and services. The app is verified by the unit tests, lint and builds
+above; it has not yet been exercised end to end on a physical device with NFC tags.
 
 ## Privacy and security
 
