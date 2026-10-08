@@ -40,6 +40,7 @@
     <string name="field_phone_error" tools:ignore="TypographyDashes">Enter a Korean mobile number, for example 010-1234-5678.</string>
     <string name="onboarding_privacy">Check-ins are deleted after 28 days. Certificate images are read on this device and never stored.</string>
     <string name="onboarding_name_change_note">Changing your name removes your verified pass; you will need to verify your certificate again.</string>
+    <string name="onboarding_save_failed">Your details could not be saved. Try again.</string>
 
     <!-- Vaccination pass -->
     <string name="pass_title">Vaccination pass</string>
@@ -143,6 +144,7 @@
     <string name="owner_rejected_invalid_key">The configured National Tax Service API key was rejected.</string>
     <string name="owner_rejected_network">The National Tax Service could not be reached. Check your connection and try again.</string>
     <string name="owner_rejected_unexpected">The National Tax Service sent an unexpected response. Try again later.</string>
+    <string name="owner_setup_save_failed">The venue could not be saved. Try again.</string>
 
     <!-- Venue dashboard -->
     <string name="owner_dashboard_title">Your venue</string>
@@ -165,6 +167,7 @@
     <string name="owner_change_venue">Change venue</string>
     <string name="owner_change_venue_confirm_title">Change venue?</string>
     <string name="owner_change_venue_confirm_body">You will need to register again. Tags you already wrote keep working.</string>
+    <string name="owner_change_venue_failed">The venue could not be changed. Try again.</string>
 
     <!-- Inspector -->
     <string name="inspector_title">Inspector</string>

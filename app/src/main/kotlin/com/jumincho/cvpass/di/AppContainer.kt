@@ -66,7 +66,8 @@ class AppContainer(context: Context, val config: AppConfig) {
     val checkInService: CheckInService by lazy { CheckInService(checkIns, visits, clock) }
 
     val venueRegistrar: VenueRegistrar by lazy {
-        VenueRegistrar(config.businessApiKey.takeIf { it.isNotBlank() }?.let { NtsBusinessRegistry(it, httpClient) })
+        val registry = config.businessApiKey.takeIf { it.isNotBlank() }?.let { NtsBusinessRegistry(it, httpClient) }
+        VenueRegistrar(registry, venueStore)
     }
 
     val passVerifier: PassVerifier by lazy { PassVerifier(MlKitCertificateTextReader(appContext), visitorStore, clock) }

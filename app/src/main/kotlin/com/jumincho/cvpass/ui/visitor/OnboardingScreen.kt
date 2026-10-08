@@ -116,6 +116,9 @@ internal fun OnboardingScreen(
                 MessageCard(body = stringResource(R.string.onboarding_name_change_note), tone = MessageTone.PENDING)
             }
             MessageCard(body = stringResource(R.string.onboarding_privacy), tone = MessageTone.INFO, icon = Icons.Outlined.Lock)
+            if (state.saveFailed) {
+                MessageCard(body = stringResource(R.string.onboarding_save_failed), tone = MessageTone.ERROR)
+            }
 
             Button(onClick = onSave, enabled = !state.saving, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.action_save))

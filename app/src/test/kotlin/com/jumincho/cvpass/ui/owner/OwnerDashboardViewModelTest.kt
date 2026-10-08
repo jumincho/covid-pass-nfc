@@ -82,6 +82,17 @@ class OwnerDashboardViewModelTest {
     }
 
     @Test
+    fun `a venue that cannot be forgotten is reported`() = runTest {
+        keepCollecting(viewModel.state)
+        store.failure = IOException("disk full")
+
+        viewModel.changeVenue()
+
+        assertTrue(viewModel.state.value.changeFailed)
+        assertEquals(Fixtures.venue, viewModel.state.value.venue)
+    }
+
+    @Test
     fun `changing venue forgets the current one`() = runTest {
         keepCollecting(viewModel.state)
 

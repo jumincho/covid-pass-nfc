@@ -8,6 +8,7 @@ import com.jumincho.cvpass.testing.MainDispatcherExtension
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import java.io.IOException
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
@@ -75,6 +76,21 @@ class OnboardingViewModelTest {
 
         assertNull(store.savedPass)
         assertEquals("김철수", store.savedProfile?.name)
+    }
+
+    @Test
+    fun `a profile that cannot be saved is reported`() = runTest {
+        val store = InMemoryVisitorStore().apply { failure = IOException("disk full") }
+        val viewModel = OnboardingViewModel(store)
+
+        viewModel.onNameChange("홍길동")
+        viewModel.onPhoneChange("01012345678")
+        viewModel.save()
+
+        val state = viewModel.state.value
+        assertTrue(state.saveFailed)
+        assertFalse(state.saved)
+        assertFalse(state.saving)
     }
 
     @Test

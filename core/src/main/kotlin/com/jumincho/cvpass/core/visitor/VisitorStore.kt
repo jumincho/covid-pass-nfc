@@ -3,7 +3,10 @@ package com.jumincho.cvpass.core.visitor
 import com.jumincho.cvpass.core.pass.VerifiedPass
 import kotlinx.coroutines.flow.Flow
 
-/** The visitor's own data on their device: the profile and the verified pass, if any. */
+/**
+ * The visitor's own data on their device: the profile and the verified pass, if any. Writes
+ * throw [java.io.IOException] if the store cannot be written.
+ */
 interface VisitorStore {
 
     /** The saved profile, or `null` before onboarding. */

@@ -145,6 +145,9 @@ internal fun OwnerSetupScreen(
                     tone = MessageTone.ERROR,
                 )
             }
+            if (state.saveFailed) {
+                MessageCard(body = stringResource(R.string.owner_setup_save_failed), tone = MessageTone.ERROR)
+            }
 
             if (state.submitting) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {

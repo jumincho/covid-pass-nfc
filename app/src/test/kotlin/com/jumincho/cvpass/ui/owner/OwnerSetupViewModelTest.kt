@@ -13,6 +13,7 @@ import com.jumincho.cvpass.testing.MainDispatcherExtension
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import java.io.IOException
 import java.time.LocalDate
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -25,7 +26,7 @@ class OwnerSetupViewModelTest {
     private val store = InMemoryVenueStore()
 
     private fun viewModel(registry: BusinessRegistry? = null) =
-        OwnerSetupViewModel(VenueRegistrar(registry), store, Fixtures.clock())
+        OwnerSetupViewModel(VenueRegistrar(registry, store), Fixtures.clock())
 
     private fun OwnerSetupViewModel.fillIn(openingDate: LocalDate = LocalDate.of(2019, 5, 2)) {
         onBusinessNumberChange("124-81-00998")
@@ -128,6 +129,20 @@ class OwnerSetupViewModelTest {
         assertFalse(state.registered)
         assertFalse(state.submitting)
         assertNull(store.saved)
+    }
+
+    @Test
+    fun `a venue that cannot be saved is reported`() = runTest {
+        store.failure = IOException("disk full")
+        val viewModel = viewModel()
+        viewModel.fillIn()
+
+        viewModel.submit()
+
+        val state = viewModel.state.value
+        assertTrue(state.saveFailed)
+        assertFalse(state.registered)
+        assertFalse(state.submitting)
     }
 
     @Test

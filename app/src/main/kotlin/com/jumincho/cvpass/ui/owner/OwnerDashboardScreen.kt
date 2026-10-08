@@ -152,6 +152,9 @@ internal fun OwnerDashboardScreen(
             OutlinedButton(onClick = { confirmingChange = true }, modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
                 Text(stringResource(R.string.owner_change_venue))
             }
+            if (state.changeFailed) {
+                MessageCard(body = stringResource(R.string.owner_change_venue_failed), tone = MessageTone.ERROR)
+            }
         }
     }
 

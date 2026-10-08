@@ -131,21 +131,26 @@ class InMemoryVisitorStore(
     }
 }
 
-/** In-memory [VenueStore]. */
+/** In-memory [VenueStore]; set [failure] to make writes throw. */
 class InMemoryVenueStore(venue: RegisteredVenue? = null) : VenueStore {
     private val state = MutableStateFlow(venue)
 
     override val venue: Flow<RegisteredVenue?> = state
+
+    /** Thrown by every write while set. */
+    var failure: Exception? = null
 
     /** The currently saved venue. */
     val saved: RegisteredVenue?
         get() = state.value
 
     override suspend fun save(venue: RegisteredVenue) {
+        failure?.let { throw it }
         state.value = venue
     }
 
     override suspend fun clear() {
+        failure?.let { throw it }
         state.value = null
     }
 }

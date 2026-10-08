@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.time.Clock
 import java.time.LocalDate
 
@@ -41,6 +42,8 @@ data class OwnerDashboardUiState(
     val visitorsToday: Int? = null,
     val countFailed: Boolean = false,
     val tagWrite: TagWriteState = TagWriteState.Idle,
+    /** Whether the last attempt to change the venue could not be written. */
+    val changeFailed: Boolean = false,
 )
 
 private data class VenueSummary(val venue: RegisteredVenue?, val visitorsToday: Int?, val countFailed: Boolean)
@@ -54,6 +57,7 @@ class OwnerDashboardViewModel(
 ) : ViewModel() {
 
     private val tagWrite = MutableStateFlow<TagWriteState>(TagWriteState.Idle)
+    private val changeFailed = MutableStateFlow(false)
 
     private val summary = store.venue.flatMapLatest { venue ->
         if (venue == null) {
@@ -66,13 +70,14 @@ class OwnerDashboardViewModel(
     }
 
     val state: StateFlow<OwnerDashboardUiState> =
-        combine(summary, tagWrite) { summary, write ->
+        combine(summary, tagWrite, changeFailed) { summary, write, failedToChange ->
             OwnerDashboardUiState(
                 loaded = true,
                 venue = summary.venue,
                 visitorsToday = summary.visitorsToday,
                 countFailed = summary.countFailed,
                 tagWrite = write,
+                changeFailed = failedToChange,
             )
         }.stateIn(viewModelScope, WhileUiSubscribed, OwnerDashboardUiState())
 
@@ -94,7 +99,14 @@ class OwnerDashboardViewModel(
 
     /** Forgets the venue so that the owner can register another one. */
     fun changeVenue() {
-        viewModelScope.launch { store.clear() }
+        changeFailed.value = false
+        viewModelScope.launch {
+            try {
+                store.clear()
+            } catch (e: IOException) {
+                changeFailed.value = true
+            }
+        }
     }
 
     companion object {

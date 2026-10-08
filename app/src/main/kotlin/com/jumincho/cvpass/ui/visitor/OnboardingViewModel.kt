@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 /** Form state for the visitor's name and mobile number. */
 data class OnboardingUiState(
@@ -26,6 +27,8 @@ data class OnboardingUiState(
     /** The profile being edited, if one exists. */
     val existing: VisitorProfile? = null,
     val saving: Boolean = false,
+    /** Whether the last attempt to save could not be written. */
+    val saveFailed: Boolean = false,
     val saved: Boolean = false,
 ) {
     /** Whether saving would discard the verified pass, because it was checked against another name. */
@@ -63,11 +66,16 @@ class OnboardingViewModel(private val store: VisitorStore) : ViewModel() {
             _state.update { it.copy(nameError = name == null, phoneError = phone == null) }
             return
         }
-        _state.update { it.copy(saving = true) }
+        _state.update { it.copy(saving = true, saveFailed = false) }
         viewModelScope.launch {
-            if (current.nameChanged) store.clearPass()
-            store.saveProfile(VisitorProfile(name, phone))
-            _state.update { it.copy(saving = false, saved = true) }
+            val saved = try {
+                if (current.nameChanged) store.clearPass()
+                store.saveProfile(VisitorProfile(name, phone))
+                true
+            } catch (e: IOException) {
+                false
+            }
+            _state.update { it.copy(saving = false, saveFailed = !saved, saved = saved) }
         }
     }
 

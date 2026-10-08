@@ -2,7 +2,10 @@ package com.jumincho.cvpass.core.venue
 
 import kotlinx.coroutines.flow.Flow
 
-/** The venue its owner registered on this device. */
+/**
+ * The venue its owner registered on this device. Writes throw [java.io.IOException] if the
+ * store cannot be written.
+ */
 interface VenueStore {
 
     /** The registered venue, or `null` if none. */

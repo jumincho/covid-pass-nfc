@@ -9,7 +9,6 @@ import com.jumincho.cvpass.core.business.BusinessRegistration
 import com.jumincho.cvpass.core.business.BusinessVerification
 import com.jumincho.cvpass.core.venue.VenueRegistrar
 import com.jumincho.cvpass.core.venue.VenueRegistrationResult
-import com.jumincho.cvpass.core.venue.VenueStore
 import com.jumincho.cvpass.core.venue.VenueTag
 import com.jumincho.cvpass.core.visitor.PersonName
 import com.jumincho.cvpass.di.appContainer
@@ -39,16 +38,18 @@ data class OwnerSetupUiState(
     val submitting: Boolean = false,
     /** Why the tax service did not confirm the last submission, if it did not. */
     val rejection: BusinessVerification? = null,
+    /** Whether the last submission was accepted but could not be saved. */
+    val saveFailed: Boolean = false,
     val registered: Boolean = false,
 )
 
 /**
- * Registers the owner's venue. The number's checksum is validated as it is typed; the
- * registration is confirmed with the National Tax Service when an API key is configured.
+ * Registers the owner's venue with [VenueRegistrar]. The number's checksum is validated as
+ * it is typed; the registration is confirmed with the National Tax Service when an API key
+ * is configured.
  */
 class OwnerSetupViewModel(
     private val registrar: VenueRegistrar,
-    private val store: VenueStore,
     private val clock: Clock,
 ) : ViewModel() {
 
@@ -93,20 +94,18 @@ class OwnerSetupViewModel(
             return
         }
 
-        _state.update { it.copy(submitting = true, rejection = null) }
+        _state.update { it.copy(submitting = true, rejection = null, saveFailed = false) }
         viewModelScope.launch {
             val result = registrar.register(
                 VenueTag(number, venueName),
                 BusinessRegistration(number, representative, openingDate),
             )
-            when (result) {
-                is VenueRegistrationResult.Registered -> {
-                    store.save(result.venue)
-                    _state.update { it.copy(submitting = false, registered = true) }
+            _state.update {
+                when (result) {
+                    is VenueRegistrationResult.Registered -> it.copy(submitting = false, registered = true)
+                    is VenueRegistrationResult.Rejected -> it.copy(submitting = false, rejection = result.verification)
+                    is VenueRegistrationResult.Failed -> it.copy(submitting = false, saveFailed = true)
                 }
-
-                is VenueRegistrationResult.Rejected ->
-                    _state.update { it.copy(submitting = false, rejection = result.verification) }
             }
         }
     }
@@ -115,7 +114,7 @@ class OwnerSetupViewModel(
         val Factory = viewModelFactory {
             initializer {
                 val container = appContainer
-                OwnerSetupViewModel(container.venueRegistrar, container.venueStore, container.clock)
+                OwnerSetupViewModel(container.venueRegistrar, container.clock)
             }
         }
     }

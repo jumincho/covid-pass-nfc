@@ -37,6 +37,7 @@
     <string name="field_phone_error" tools:ignore="TypographyDashes">010-1234-5678처럼 휴대폰 번호를 입력해 주세요.</string>
     <string name="onboarding_privacy">출입 기록은 28일 후 삭제됩니다. 증명서 이미지는 이 기기에서만 읽고 저장하지 않습니다.</string>
     <string name="onboarding_name_change_note">이름을 바꾸면 확인된 접종 증명이 삭제되어 증명서를 다시 확인해야 합니다.</string>
+    <string name="onboarding_save_failed">내 정보를 저장하지 못했습니다. 다시 시도해 주세요.</string>
 
     <!-- 접종 증명 -->
     <string name="pass_title">접종 증명</string>
@@ -136,6 +137,7 @@
     <string name="owner_rejected_invalid_key">설정된 국세청 API 키가 거부되었습니다.</string>
     <string name="owner_rejected_network">국세청 서비스에 연결할 수 없습니다. 인터넷 연결을 확인한 뒤 다시 시도해 주세요.</string>
     <string name="owner_rejected_unexpected">국세청 서비스에서 예상하지 못한 응답을 받았습니다. 잠시 후 다시 시도해 주세요.</string>
+    <string name="owner_setup_save_failed">매장 정보를 저장하지 못했습니다. 다시 시도해 주세요.</string>
 
     <!-- 매장 현황 -->
     <string name="owner_dashboard_title">내 매장</string>
@@ -157,6 +159,7 @@
     <string name="owner_change_venue">매장 변경</string>
     <string name="owner_change_venue_confirm_title">매장을 변경할까요?</string>
     <string name="owner_change_venue_confirm_body">매장을 다시 등록해야 합니다. 이미 만든 태그는 계속 사용할 수 있습니다.</string>
+    <string name="owner_change_venue_failed">매장을 변경하지 못했습니다. 다시 시도해 주세요.</string>
 
     <!-- 역학조사관 -->
     <string name="inspector_title">역학조사관</string>
