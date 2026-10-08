@@ -26,10 +26,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) forwardVenueTag(intent)
 
-        val container = (application as CvPassApplication).container
         setContent {
             CvPassTheme {
-                CvPassNavHost(container = container, venueTagPayloads = venueTagPayloads)
+                CvPassNavHost(venueTagPayloads = venueTagPayloads)
             }
         }
     }

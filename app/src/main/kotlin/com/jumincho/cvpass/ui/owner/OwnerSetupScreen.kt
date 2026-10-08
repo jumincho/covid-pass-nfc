@@ -57,8 +57,6 @@ fun OwnerSetupRoute(
     }
     OwnerSetupScreen(
         state = state,
-        verifiesWithTaxService = viewModel.verifiesWithTaxService,
-        today = viewModel.today,
         onBusinessNumberChange = viewModel::onBusinessNumberChange,
         onRepresentativeChange = viewModel::onRepresentativeChange,
         onOpeningDateChange = viewModel::onOpeningDateChange,
@@ -71,8 +69,6 @@ fun OwnerSetupRoute(
 @Composable
 internal fun OwnerSetupScreen(
     state: OwnerSetupUiState,
-    verifiesWithTaxService: Boolean,
-    today: LocalDate,
     onBusinessNumberChange: (String) -> Unit,
     onRepresentativeChange: (String) -> Unit,
     onOpeningDateChange: (LocalDate) -> Unit,
@@ -128,7 +124,7 @@ internal fun OwnerSetupScreen(
                 label = stringResource(R.string.field_opening_date),
                 date = state.openingDate,
                 onDateSelected = onOpeningDateChange,
-                latest = today,
+                latest = state.today,
                 errorText = if (state.openingDateError) stringResource(R.string.field_opening_date_error) else null,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -149,8 +145,8 @@ internal fun OwnerSetupScreen(
             )
 
             MessageCard(
-                body = stringResource(if (verifiesWithTaxService) R.string.owner_setup_nts_on else R.string.owner_setup_nts_off),
-                tone = if (verifiesWithTaxService) MessageTone.INFO else MessageTone.PENDING,
+                body = stringResource(if (state.verifiesWithTaxService) R.string.owner_setup_nts_on else R.string.owner_setup_nts_off),
+                tone = if (state.verifiesWithTaxService) MessageTone.INFO else MessageTone.PENDING,
             )
 
             state.rejection?.let { rejection ->
@@ -169,7 +165,7 @@ internal fun OwnerSetupScreen(
             }
 
             Button(onClick = onSubmit, enabled = !state.submitting, modifier = Modifier.fillMaxWidth()) {
-                Text(stringResource(if (verifiesWithTaxService) R.string.owner_setup_submit else R.string.owner_setup_submit_local))
+                Text(stringResource(if (state.verifiesWithTaxService) R.string.owner_setup_submit else R.string.owner_setup_submit_local))
             }
         }
     }
@@ -191,9 +187,12 @@ private fun rejectionMessage(rejection: BusinessVerification): String = when (re
 private fun OwnerSetupScreenPreview() {
     CvPassTheme {
         OwnerSetupScreen(
-            state = OwnerSetupUiState(businessDigits = "1248100997", numberProblem = BusinessNumber.Problem.CHECKSUM_MISMATCH),
-            verifiesWithTaxService = false,
-            today = LocalDate.of(2021, 10, 20),
+            state = OwnerSetupUiState(
+                verifiesWithTaxService = false,
+                today = LocalDate.of(2021, 10, 20),
+                businessDigits = "1248100997",
+                numberProblem = BusinessNumber.Problem.CHECKSUM_MISMATCH,
+            ),
             onBusinessNumberChange = {},
             onRepresentativeChange = {},
             onOpeningDateChange = {},

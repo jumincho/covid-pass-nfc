@@ -64,6 +64,11 @@ class OwnerSetupViewModelTest {
     }
 
     @Test
+    fun `offers opening dates up to today`() = runTest {
+        assertEquals(Fixtures.today, viewModel().state.value.today)
+    }
+
+    @Test
     fun `rejects an opening date in the future`() = runTest {
         val viewModel = viewModel()
         viewModel.fillIn(openingDate = Fixtures.today.plusDays(1))
@@ -77,7 +82,7 @@ class OwnerSetupViewModelTest {
     @Test
     fun `without an API key the venue is saved as not verified`() = runTest {
         val viewModel = viewModel(registry = null)
-        assertFalse(viewModel.verifiesWithTaxService)
+        assertFalse(viewModel.state.value.verifiesWithTaxService)
         viewModel.fillIn()
 
         viewModel.submit()
@@ -102,6 +107,7 @@ class OwnerSetupViewModelTest {
                 BusinessVerification.Valid
             },
         )
+        assertTrue(viewModel.state.value.verifiesWithTaxService)
         viewModel.fillIn()
 
         viewModel.submit()

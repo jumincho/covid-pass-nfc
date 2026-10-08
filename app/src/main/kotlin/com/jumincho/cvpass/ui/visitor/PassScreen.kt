@@ -345,7 +345,6 @@ private fun PassScreenPreview() {
     CvPassTheme {
         PassScreen(
             state = PassUiState(
-                loaded = true,
                 profile = VisitorProfile("홍길동", PhoneNumber.parse("010-1234-5678")!!),
                 pass = VerifiedPass(
                     VaccinationRecord(doses = 2, primarySeriesDoses = 2, lastDoseDate = LocalDate.of(2021, 8, 15)),

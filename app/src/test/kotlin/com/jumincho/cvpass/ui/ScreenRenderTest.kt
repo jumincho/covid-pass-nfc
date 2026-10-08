@@ -85,9 +85,14 @@ class ScreenRenderTest {
         var visitorClicks = 0
         render("home") {
             HomeScreen(
-                state = HomeUiState(loaded = true, profile = Fixtures.visitor, passStatus = PassStatus.Valid, venue = Fixtures.venue),
-                storage = StorageBackend.Device,
-                verifiesWithTaxService = false,
+                state = HomeUiState(
+                    storage = StorageBackend.Device,
+                    verifiesWithTaxService = false,
+                    loaded = true,
+                    profile = Fixtures.visitor,
+                    passStatus = PassStatus.Valid,
+                    venue = Fixtures.venue,
+                ),
                 onVisitor = { visitorClicks++ },
                 onOwner = {},
                 onInspector = {},
@@ -200,7 +205,6 @@ class ScreenRenderTest {
     }
 
     private val passState = PassUiState(
-        loaded = true,
         profile = Fixtures.visitor,
         pass = Fixtures.validPass,
         status = PassStatus.Valid,

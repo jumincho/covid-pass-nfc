@@ -23,6 +23,10 @@ import java.time.LocalDate
 
 /** The venue registration form. */
 data class OwnerSetupUiState(
+    /** Whether submissions are confirmed with the National Tax Service or only checked locally. */
+    val verifiesWithTaxService: Boolean,
+    /** The latest selectable opening date. */
+    val today: LocalDate,
     /** Digits only; the text field formats them. */
     val businessDigits: String = "",
     val representative: String = "",
@@ -48,16 +52,10 @@ class OwnerSetupViewModel(
     private val clock: Clock,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(OwnerSetupUiState())
+    private val _state = MutableStateFlow(
+        OwnerSetupUiState(verifiesWithTaxService = registrar.verifiesWithTaxService, today = LocalDate.now(clock)),
+    )
     val state: StateFlow<OwnerSetupUiState> = _state.asStateFlow()
-
-    /** Whether submissions are checked with the tax service or only locally. */
-    val verifiesWithTaxService: Boolean
-        get() = registrar.verifiesWithTaxService
-
-    /** The latest selectable opening date. */
-    val today: LocalDate
-        get() = LocalDate.now(clock)
 
     fun onBusinessNumberChange(value: String) {
         val digits = value.filter { it in '0'..'9' }.take(BusinessNumber.LENGTH)
@@ -82,7 +80,7 @@ class OwnerSetupViewModel(
         if (current.submitting) return
         val number = BusinessNumber.parse(current.businessDigits)
         val representative = PersonName.normalize(current.representative)
-        val openingDate = current.openingDate?.takeUnless { it.isAfter(today) }
+        val openingDate = current.openingDate?.takeUnless { it.isAfter(LocalDate.now(clock)) }
         val venueName = VenueTag.normalizeName(current.venueName)
         if (number == null || representative == null || openingDate == null || venueName == null) {
             _state.update {

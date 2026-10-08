@@ -43,8 +43,6 @@ import com.jumincho.cvpass.ui.theme.CvPassTheme
 /** Role chooser: visitor, venue owner or inspector. */
 @Composable
 fun HomeRoute(
-    storage: StorageBackend,
-    verifiesWithTaxService: Boolean,
     onVisitor: (hasProfile: Boolean) -> Unit,
     onOwner: (hasVenue: Boolean) -> Unit,
     onInspector: () -> Unit,
@@ -53,8 +51,6 @@ fun HomeRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
     HomeScreen(
         state = state,
-        storage = storage,
-        verifiesWithTaxService = verifiesWithTaxService,
         onVisitor = { onVisitor(state.profile != null) },
         onOwner = { onOwner(state.venue != null) },
         onInspector = onInspector,
@@ -64,8 +60,6 @@ fun HomeRoute(
 @Composable
 internal fun HomeScreen(
     state: HomeUiState,
-    storage: StorageBackend,
-    verifiesWithTaxService: Boolean,
     onVisitor: () -> Unit,
     onOwner: () -> Unit,
     onInspector: () -> Unit,
@@ -123,12 +117,12 @@ internal fun HomeScreen(
             )
 
             Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.padding(top = 8.dp)) {
-                val storageText = when (storage) {
+                val storageText = when (val storage = state.storage) {
                     StorageBackend.Device -> stringResource(R.string.home_storage_device)
                     is StorageBackend.Firestore -> stringResource(R.string.home_storage_firestore, storage.projectId)
                 }
                 val taxServiceText = stringResource(
-                    if (verifiesWithTaxService) R.string.home_tax_service_on else R.string.home_tax_service_off,
+                    if (state.verifiesWithTaxService) R.string.home_tax_service_on else R.string.home_tax_service_off,
                 )
                 listOf(storageText, taxServiceText).forEach {
                     Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -189,9 +183,7 @@ private fun RoleCard(
 private fun HomeScreenPreview() {
     CvPassTheme {
         HomeScreen(
-            state = HomeUiState(loaded = true),
-            storage = StorageBackend.Device,
-            verifiesWithTaxService = false,
+            state = HomeUiState(storage = StorageBackend.Device, verifiesWithTaxService = false, loaded = true),
             onVisitor = {},
             onOwner = {},
             onInspector = {},

@@ -8,7 +8,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.jumincho.cvpass.di.AppContainer
 import com.jumincho.cvpass.ui.checkin.CheckInRoute
 import com.jumincho.cvpass.ui.home.HomeRoute
 import com.jumincho.cvpass.ui.inspector.InspectorRoute
@@ -25,7 +24,6 @@ import java.util.Base64
  */
 @Composable
 fun CvPassNavHost(
-    container: AppContainer,
     venueTagPayloads: Flow<ByteArray>,
     navController: NavHostController = rememberNavController(),
 ) {
@@ -40,8 +38,6 @@ fun CvPassNavHost(
     NavHost(navController = navController, startDestination = Destination.Home) {
         composable<Destination.Home> {
             HomeRoute(
-                storage = container.storage,
-                verifiesWithTaxService = container.venueRegistrar.verifiesWithTaxService,
                 onVisitor = { hasProfile ->
                     if (hasProfile) navController.navigate(Destination.Pass) else navController.navigate(Destination.Onboarding())
                 },

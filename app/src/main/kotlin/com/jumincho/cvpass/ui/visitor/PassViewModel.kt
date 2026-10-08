@@ -46,7 +46,7 @@ sealed interface VerificationState {
 
 /** Everything the pass screen shows. */
 data class PassUiState(
-    val loaded: Boolean = false,
+    /** The visitor's details, or `null` until they have loaded. */
     val profile: VisitorProfile? = null,
     val pass: VerifiedPass? = null,
     /** Status of [pass] today, or `null` if no pass was verified. */
@@ -71,7 +71,6 @@ class PassViewModel(
     val state: StateFlow<PassUiState> =
         combine(store.profile, store.pass, visits.recent(RECENT_VISITS), verification) { profile, pass, recent, verifying ->
             PassUiState(
-                loaded = true,
                 profile = profile,
                 pass = pass,
                 status = pass?.let { PassPolicy.evaluate(it.record, LocalDate.now(clock)) },
