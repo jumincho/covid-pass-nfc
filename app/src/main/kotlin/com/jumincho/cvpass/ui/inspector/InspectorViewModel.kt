@@ -80,9 +80,8 @@ class InspectorViewModel(
     }
 
     fun onBusinessNumberChange(value: String) {
-        val digits = value.filter { it in '0'..'9' }.take(BusinessNumber.LENGTH)
-        val problem = if (digits.length == BusinessNumber.LENGTH) BusinessNumber.problemWith(digits) else null
-        _state.update { it.copy(businessDigits = digits, numberProblem = problem) }
+        val digits = BusinessNumber.digitsOf(value)
+        _state.update { it.copy(businessDigits = digits, numberProblem = BusinessNumber.problemWhileTyping(digits)) }
     }
 
     fun onDateChange(date: LocalDate) {

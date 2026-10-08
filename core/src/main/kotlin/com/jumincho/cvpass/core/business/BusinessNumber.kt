@@ -64,6 +64,18 @@ value class BusinessNumber private constructor(
         }
 
         /**
+         * Keeps the ASCII digits of [input], at most [LENGTH] of them: what a number field
+         * holds while the user types or pastes a number.
+         */
+        fun digitsOf(input: String): String = input.filter { it in '0'..'9' }.take(LENGTH)
+
+        /**
+         * What is wrong with [digits] once all [LENGTH] have been typed, or `null` before
+         * then, so that a field does not flag a number the user is still typing.
+         */
+        fun problemWhileTyping(digits: String): Problem? = if (digits.length == LENGTH) problemWith(digits) else null
+
+        /**
          * Formats a partially typed number (digits only) progressively as `123-45-67890`,
          * for use while the user is still typing.
          */

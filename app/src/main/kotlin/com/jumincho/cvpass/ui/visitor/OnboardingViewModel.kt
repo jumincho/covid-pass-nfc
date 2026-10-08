@@ -51,7 +51,7 @@ class OnboardingViewModel(private val store: VisitorStore) : ViewModel() {
     }
 
     fun onPhoneChange(value: String) {
-        _state.update { it.copy(phoneDigits = value.filter { c -> c in '0'..'9' }.take(PhoneNumber.MAX_LENGTH), phoneError = false) }
+        _state.update { it.copy(phoneDigits = PhoneNumber.digitsOf(value), phoneError = false) }
     }
 
     fun save() {

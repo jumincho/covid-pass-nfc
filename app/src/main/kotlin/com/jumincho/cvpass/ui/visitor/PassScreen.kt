@@ -3,28 +3,20 @@ package com.jumincho.cvpass.ui.visitor
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.History
-import androidx.compose.material.icons.outlined.HourglassTop
 import androidx.compose.material.icons.outlined.Nfc
 import androidx.compose.material.icons.outlined.PhotoLibrary
-import androidx.compose.material.icons.outlined.Vaccines
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -32,17 +24,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
@@ -60,12 +47,12 @@ import com.jumincho.cvpass.core.pass.VaccinationRecord
 import com.jumincho.cvpass.core.pass.VerifiedPass
 import com.jumincho.cvpass.core.visitor.PhoneNumber
 import com.jumincho.cvpass.core.visitor.VisitorProfile
+import com.jumincho.cvpass.ui.components.ButtonLabel
 import com.jumincho.cvpass.ui.components.MessageCard
 import com.jumincho.cvpass.ui.components.MessageTone
 import com.jumincho.cvpass.ui.components.ScreenScaffold
 import com.jumincho.cvpass.ui.components.SectionTitle
 import com.jumincho.cvpass.ui.components.rememberFormats
-import com.jumincho.cvpass.ui.theme.BrandColors
 import com.jumincho.cvpass.ui.theme.CvPassTheme
 import java.time.Instant
 import java.time.LocalDate
@@ -147,102 +134,6 @@ internal fun PassScreen(
         }
     }
 }
-
-@Composable
-private fun ButtonLabel(icon: ImageVector, text: String) {
-    Icon(icon, contentDescription = null, modifier = Modifier.size(18.dp))
-    Spacer(Modifier.size(8.dp))
-    Text(text)
-}
-
-@Composable
-private fun PassCard(profile: VisitorProfile, pass: VerifiedPass?, status: PassStatus?) {
-    val formats = rememberFormats()
-    val secondary = Color.White.copy(alpha = 0.85f)
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
-            .background(Brush.linearGradient(listOf(BrandColors.Navy, BrandColors.DeepBlue)))
-            .semantics(mergeDescendants = true) { }
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Outlined.Vaccines, contentDescription = null, tint = secondary)
-            Spacer(Modifier.size(8.dp))
-            Text(
-                text = stringResource(R.string.pass_card_label),
-                style = MaterialTheme.typography.labelLarge,
-                color = secondary,
-                modifier = Modifier.weight(1f),
-            )
-            StatusChip(status)
-        }
-        Text(profile.name, style = MaterialTheme.typography.headlineSmall, color = Color.White)
-        Text(profile.phone.formatted, style = MaterialTheme.typography.bodyMedium, color = secondary)
-        if (pass != null) {
-            val record = pass.record
-            val doses = pluralStringResource(R.plurals.pass_doses, record.doses, record.doses)
-            val summary = if (record.doses > record.primarySeriesDoses) "$doses · ${stringResource(R.string.pass_booster)}" else doses
-            Text(summary, style = MaterialTheme.typography.titleMedium, color = Color.White, modifier = Modifier.padding(top = 8.dp))
-            Text(
-                text = stringResource(R.string.pass_last_dose, formats.date(record.lastDoseDate)),
-                style = MaterialTheme.typography.bodyMedium,
-                color = secondary,
-            )
-            Text(
-                text = stringResource(R.string.pass_verified_on, formats.dateTime(pass.verifiedAt)),
-                style = MaterialTheme.typography.bodySmall,
-                color = secondary,
-            )
-        }
-    }
-}
-
-@Composable
-private fun StatusChip(status: PassStatus?) {
-    val formats = rememberFormats()
-    val statusColors = CvPassTheme.statusColors
-    val colors = MaterialTheme.colorScheme
-    val (icon, label, container, content) = when (status) {
-        PassStatus.Valid -> ChipStyle(
-            Icons.Outlined.CheckCircle,
-            stringResource(R.string.pass_status_valid),
-            statusColors.success,
-            statusColors.onSuccess,
-        )
-
-        is PassStatus.NotYetValid -> ChipStyle(
-            Icons.Outlined.HourglassTop,
-            stringResource(R.string.pass_status_pending, formats.date(status.validFrom)) + " · " +
-                pluralStringResource(R.plurals.pass_days_remaining, status.daysRemaining, status.daysRemaining),
-            statusColors.pending,
-            statusColors.onPending,
-        )
-
-        is PassStatus.Invalid -> ChipStyle(
-            Icons.Outlined.ErrorOutline,
-            stringResource(R.string.pass_status_invalid),
-            colors.errorContainer,
-            colors.onErrorContainer,
-        )
-
-        null -> ChipStyle(null, stringResource(R.string.pass_status_none), colors.surfaceVariant, colors.onSurfaceVariant)
-    }
-    Surface(shape = CircleShape, color = container, contentColor = content) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            if (icon != null) Icon(icon, contentDescription = null, modifier = Modifier.size(16.dp))
-            Text(label, style = MaterialTheme.typography.labelMedium)
-        }
-    }
-}
-
-private data class ChipStyle(val icon: ImageVector?, val label: String, val container: Color, val content: Color)
 
 @Composable
 private fun VerificationFeedback(verification: VerificationState, profileName: String, onDismiss: () -> Unit) {

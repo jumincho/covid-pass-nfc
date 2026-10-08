@@ -28,7 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -45,8 +44,9 @@ import com.jumincho.cvpass.core.business.BusinessNumber
 import com.jumincho.cvpass.core.checkin.CheckIn
 import com.jumincho.cvpass.core.privacy.Masking
 import com.jumincho.cvpass.core.visitor.PhoneNumber
+import com.jumincho.cvpass.ui.components.BusinessNumberField
+import com.jumincho.cvpass.ui.components.ButtonLabel
 import com.jumincho.cvpass.ui.components.DateField
-import com.jumincho.cvpass.ui.components.FormattedDigitsTransformation
 import com.jumincho.cvpass.ui.components.MessageCard
 import com.jumincho.cvpass.ui.components.MessageTone
 import com.jumincho.cvpass.ui.components.ScreenScaffold
@@ -135,20 +135,11 @@ private fun LogQuery(
     onSearch: () -> Unit,
     onSelect: (CheckIn) -> Unit,
 ) {
-    val numberError = when (state.numberProblem) {
-        BusinessNumber.Problem.WRONG_FORMAT -> stringResource(R.string.field_business_number_format)
-        BusinessNumber.Problem.CHECKSUM_MISMATCH -> stringResource(R.string.field_business_number_checksum)
-        null -> null
-    }
-    OutlinedTextField(
+    BusinessNumberField(
         value = state.businessDigits,
+        problem = state.numberProblem,
         onValueChange = onBusinessNumberChange,
-        label = { Text(stringResource(R.string.field_business_number)) },
-        supportingText = { Text(numberError ?: stringResource(R.string.field_business_number_hint)) },
-        isError = numberError != null,
-        singleLine = true,
-        visualTransformation = remember { FormattedDigitsTransformation(BusinessNumber::formatPartial) },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Search),
+        imeAction = ImeAction.Search,
         keyboardActions = KeyboardActions(onSearch = { onSearch() }),
         modifier = Modifier.fillMaxWidth(),
     )
@@ -160,8 +151,7 @@ private fun LogQuery(
         modifier = Modifier.fillMaxWidth(),
     )
     Button(onClick = onSearch, enabled = state.results != LogResults.Loading, modifier = Modifier.fillMaxWidth()) {
-        Icon(Icons.Outlined.Search, contentDescription = null)
-        Text(stringResource(R.string.inspector_search), modifier = Modifier.padding(start = 8.dp))
+        ButtonLabel(Icons.Outlined.Search, stringResource(R.string.inspector_search))
     }
 
     when (val results = state.results) {

@@ -19,14 +19,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -35,8 +33,8 @@ import com.jumincho.cvpass.R
 import com.jumincho.cvpass.core.business.BusinessNumber
 import com.jumincho.cvpass.core.business.BusinessVerification
 import com.jumincho.cvpass.core.venue.VenueTag
+import com.jumincho.cvpass.ui.components.BusinessNumberField
 import com.jumincho.cvpass.ui.components.DateField
-import com.jumincho.cvpass.ui.components.FormattedDigitsTransformation
 import com.jumincho.cvpass.ui.components.MessageCard
 import com.jumincho.cvpass.ui.components.MessageTone
 import com.jumincho.cvpass.ui.components.ScreenScaffold
@@ -88,20 +86,11 @@ internal fun OwnerSetupScreen(
         ) {
             Text(stringResource(R.string.owner_setup_intro), style = MaterialTheme.typography.bodyLarge)
 
-            val numberError = when (state.numberProblem) {
-                BusinessNumber.Problem.WRONG_FORMAT -> stringResource(R.string.field_business_number_format)
-                BusinessNumber.Problem.CHECKSUM_MISMATCH -> stringResource(R.string.field_business_number_checksum)
-                null -> null
-            }
-            OutlinedTextField(
+            BusinessNumberField(
                 value = state.businessDigits,
+                problem = state.numberProblem,
                 onValueChange = onBusinessNumberChange,
-                label = { Text(stringResource(R.string.field_business_number)) },
-                supportingText = { Text(numberError ?: stringResource(R.string.field_business_number_hint)) },
-                isError = numberError != null,
-                singleLine = true,
-                visualTransformation = remember { FormattedDigitsTransformation(BusinessNumber::formatPartial) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+                imeAction = ImeAction.Next,
                 modifier = Modifier.fillMaxWidth(),
             )
 

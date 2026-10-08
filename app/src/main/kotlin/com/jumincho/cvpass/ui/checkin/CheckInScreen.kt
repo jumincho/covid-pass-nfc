@@ -149,13 +149,12 @@ internal fun CheckInScreen(
                 }
 
                 is CheckInUiState.PassRequired -> {
-                    val body = when (val status = state.status) {
-                        null -> stringResource(R.string.checkin_pass_required_none)
-                        is PassStatus.NotYetValid ->
-                            stringResource(R.string.checkin_pass_required_pending, formats.date(status.validFrom))
-                        else -> stringResource(R.string.checkin_pass_required_invalid)
-                    }
-                    ResultMessage(Icons.Outlined.ErrorOutline, colors.error, stringResource(R.string.checkin_pass_required_title), body)
+                    ResultMessage(
+                        icon = Icons.Outlined.ErrorOutline,
+                        tint = colors.error,
+                        title = stringResource(R.string.checkin_pass_required_title),
+                        body = passRequiredMessage(state.status),
+                    )
                     Button(onClick = onVerifyPass, modifier = Modifier.fillMaxWidth()) {
                         Text(stringResource(R.string.pass_verify_action))
                     }
@@ -174,12 +173,12 @@ internal fun CheckInScreen(
                 }
 
                 is CheckInUiState.TagError -> {
-                    val body = when (state.problem) {
-                        TagProblem.NOT_VENUE_TAG -> stringResource(R.string.checkin_tag_not_cvpass)
-                        TagProblem.UNSUPPORTED_VERSION -> stringResource(R.string.checkin_tag_unsupported)
-                        TagProblem.READ_FAILED -> stringResource(R.string.checkin_tag_read_failed)
-                    }
-                    ResultMessage(Icons.Outlined.ErrorOutline, colors.error, stringResource(R.string.checkin_tag_problem_title), body)
+                    ResultMessage(
+                        icon = Icons.Outlined.ErrorOutline,
+                        tint = colors.error,
+                        title = stringResource(R.string.checkin_tag_problem_title),
+                        body = tagProblemMessage(state.problem),
+                    )
                     OutlinedButton(onClick = onScanAgain, modifier = Modifier.fillMaxWidth()) {
                         Text(stringResource(R.string.action_retry))
                     }
@@ -237,6 +236,20 @@ private fun WaitingForTag() {
         textAlign = TextAlign.Center,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
+}
+
+@Composable
+private fun passRequiredMessage(status: PassStatus?): String = when (status) {
+    null -> stringResource(R.string.checkin_pass_required_none)
+    is PassStatus.NotYetValid -> stringResource(R.string.checkin_pass_required_pending, rememberFormats().date(status.validFrom))
+    is PassStatus.Invalid, PassStatus.Valid -> stringResource(R.string.checkin_pass_required_invalid)
+}
+
+@Composable
+private fun tagProblemMessage(problem: TagProblem): String = when (problem) {
+    TagProblem.NOT_VENUE_TAG -> stringResource(R.string.checkin_tag_not_cvpass)
+    TagProblem.UNSUPPORTED_VERSION -> stringResource(R.string.checkin_tag_unsupported)
+    TagProblem.READ_FAILED -> stringResource(R.string.checkin_tag_read_failed)
 }
 
 @Composable

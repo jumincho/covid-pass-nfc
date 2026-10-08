@@ -3,13 +3,10 @@ package com.jumincho.cvpass.ui.owner
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Groups
@@ -24,7 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -57,11 +53,13 @@ import com.jumincho.cvpass.nfc.NfcReaderMode
 import com.jumincho.cvpass.nfc.TagWriteResult
 import com.jumincho.cvpass.nfc.VenueTagNfc
 import com.jumincho.cvpass.nfc.rememberNfcAvailability
+import com.jumincho.cvpass.ui.components.ButtonLabel
 import com.jumincho.cvpass.ui.components.MessageCard
 import com.jumincho.cvpass.ui.components.MessageTone
 import com.jumincho.cvpass.ui.components.NfcUnavailableMessage
 import com.jumincho.cvpass.ui.components.ScreenScaffold
 import com.jumincho.cvpass.ui.components.SectionTitle
+import com.jumincho.cvpass.ui.components.StatusBadge
 import com.jumincho.cvpass.ui.theme.CvPassTheme
 import java.time.LocalDate
 
@@ -180,9 +178,7 @@ internal fun OwnerDashboardScreen(
 @Composable
 private fun WriteTagButton(enabled: Boolean, onClick: () -> Unit) {
     Button(onClick = onClick, enabled = enabled, modifier = Modifier.fillMaxWidth()) {
-        Icon(Icons.Outlined.Nfc, contentDescription = null, modifier = Modifier.size(18.dp))
-        Spacer(Modifier.size(8.dp))
-        Text(stringResource(R.string.owner_write_tag))
+        ButtonLabel(Icons.Outlined.Nfc, stringResource(R.string.owner_write_tag))
     }
 }
 
@@ -200,28 +196,20 @@ private fun VenueCard(venue: RegisteredVenue) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             val statusColors = CvPassTheme.statusColors
-            Surface(
-                shape = CircleShape,
-                color = if (venue.verifiedWithTaxService) statusColors.success else statusColors.pending,
-                contentColor = if (venue.verifiedWithTaxService) statusColors.onSuccess else statusColors.onPending,
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    Icon(
-                        imageVector = if (venue.verifiedWithTaxService) Icons.Outlined.VerifiedUser else Icons.Outlined.Info,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                    )
-                    Text(
-                        text = stringResource(
-                            if (venue.verifiedWithTaxService) R.string.owner_verified_badge else R.string.owner_unverified_badge,
-                        ),
-                        style = MaterialTheme.typography.labelMedium,
-                    )
-                }
+            if (venue.verifiedWithTaxService) {
+                StatusBadge(
+                    label = stringResource(R.string.owner_verified_badge),
+                    containerColor = statusColors.success,
+                    contentColor = statusColors.onSuccess,
+                    icon = Icons.Outlined.VerifiedUser,
+                )
+            } else {
+                StatusBadge(
+                    label = stringResource(R.string.owner_unverified_badge),
+                    containerColor = statusColors.pending,
+                    contentColor = statusColors.onPending,
+                    icon = Icons.Outlined.Info,
+                )
             }
         }
     }

@@ -45,6 +45,18 @@ class PhoneNumberTest {
 
     @ParameterizedTest
     @CsvSource(
+        "010-1234-5678, 01012345678",
+        "'010-1234-5678 ext. 99', 01012345678",
+        "'(010) 1234', 0101234",
+        "+82 10, 8210",
+        "'', ''",
+    )
+    fun `keeps up to eleven typed digits`(input: String, expected: String) {
+        assertEquals(expected, PhoneNumber.digitsOf(input))
+    }
+
+    @ParameterizedTest
+    @CsvSource(
         "'', ''",
         "0, 0",
         "010, 010",

@@ -41,6 +41,12 @@ value class PhoneNumber private constructor(
         }
 
         /**
+         * Keeps the ASCII digits of [input], at most [MAX_LENGTH] of them: what a phone
+         * field holds while the user types or pastes a number.
+         */
+        fun digitsOf(input: String): String = input.filter { it in '0'..'9' }.take(MAX_LENGTH)
+
+        /**
          * Formats a partially typed number (digits only) as it would be written in full:
          * `010-1234-5678` for eleven-digit numbers, `011-123-4567` for ten-digit ones.
          */

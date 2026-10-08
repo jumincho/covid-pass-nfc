@@ -53,6 +53,27 @@ class BusinessNumberTest {
 
     @ParameterizedTest
     @CsvSource(
+        "124-81-00998, 1248100998",
+        "' 124 81 00998 ', 1248100998",
+        "12481009981234, 1248100998",
+        "124a81, 12481",
+        "'１２４', ''",
+        "'', ''",
+    )
+    fun `keeps up to ten typed digits`(input: String, expected: String) {
+        assertEquals(expected, BusinessNumber.digitsOf(input))
+    }
+
+    @Test
+    fun `flags a typed number only once all ten digits are in`() {
+        assertNull(BusinessNumber.problemWhileTyping(""))
+        assertNull(BusinessNumber.problemWhileTyping("124810099"))
+        assertEquals(BusinessNumber.Problem.CHECKSUM_MISMATCH, BusinessNumber.problemWhileTyping("1248100997"))
+        assertNull(BusinessNumber.problemWhileTyping("1248100998"))
+    }
+
+    @ParameterizedTest
+    @CsvSource(
         "'', ''",
         "124, 124",
         "1248, 124-8",
