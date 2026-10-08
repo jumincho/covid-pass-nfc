@@ -4,15 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.jumincho.cvpass.appContainer
 import com.jumincho.cvpass.core.checkin.CheckInRepository
 import com.jumincho.cvpass.core.venue.RegisteredVenue
 import com.jumincho.cvpass.core.venue.VenueStore
+import com.jumincho.cvpass.di.appContainer
 import com.jumincho.cvpass.nfc.TagWriteResult
-import com.jumincho.cvpass.ui.STOP_TIMEOUT_MILLIS
+import com.jumincho.cvpass.ui.WhileUiSubscribed
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -75,7 +74,7 @@ class OwnerDashboardViewModel(
                 countFailed = summary.countFailed,
                 tagWrite = write,
             )
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS), OwnerDashboardUiState())
+        }.stateIn(viewModelScope, WhileUiSubscribed, OwnerDashboardUiState())
 
     /** Enables tag writing until a tag is written or [cancelTagWrite] is called. */
     fun startTagWrite() {

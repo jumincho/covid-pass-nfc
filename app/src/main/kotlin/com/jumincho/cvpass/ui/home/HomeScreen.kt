@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jumincho.cvpass.R
-import com.jumincho.cvpass.StorageBackend
 import com.jumincho.cvpass.core.pass.PassStatus
+import com.jumincho.cvpass.data.StorageBackend
 import com.jumincho.cvpass.ui.components.CvPassLogo
 import com.jumincho.cvpass.ui.components.SectionTitle
 import com.jumincho.cvpass.ui.components.rememberFormats

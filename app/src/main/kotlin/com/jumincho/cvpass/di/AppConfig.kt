@@ -1,4 +1,7 @@
-package com.jumincho.cvpass
+package com.jumincho.cvpass.di
+
+import com.jumincho.cvpass.BuildConfig
+import com.jumincho.cvpass.data.firebase.FirebaseSettings
 
 /**
  * Optional integrations, configured through `local.properties` at build time. Every one of
@@ -23,18 +26,5 @@ data class AppConfig(
                 apiKey = BuildConfig.FIREBASE_API_KEY,
             ),
         )
-    }
-}
-
-/** The three values Firebase needs when it is initialised without `google-services.json`. */
-data class FirebaseSettings(val projectId: String, val applicationId: String, val apiKey: String) {
-    companion object {
-        /** Returns settings if all three values are present, otherwise `null`. */
-        fun of(projectId: String, applicationId: String, apiKey: String): FirebaseSettings? =
-            if (projectId.isNotBlank() && applicationId.isNotBlank() && apiKey.isNotBlank()) {
-                FirebaseSettings(projectId.trim(), applicationId.trim(), apiKey.trim())
-            } else {
-                null
-            }
     }
 }

@@ -15,10 +15,10 @@ import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.jumincho.cvpass.R
-import com.jumincho.cvpass.StorageBackend
 import com.jumincho.cvpass.core.checkin.CheckIn
 import com.jumincho.cvpass.core.checkin.Visit
 import com.jumincho.cvpass.core.pass.PassStatus
+import com.jumincho.cvpass.data.StorageBackend
 import com.jumincho.cvpass.nfc.NfcAvailability
 import com.jumincho.cvpass.testing.Fixtures
 import com.jumincho.cvpass.ui.checkin.CheckInScreen

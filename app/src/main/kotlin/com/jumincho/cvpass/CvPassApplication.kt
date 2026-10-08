@@ -2,8 +2,8 @@ package com.jumincho.cvpass
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.CreationExtras
+import com.jumincho.cvpass.di.AppConfig
+import com.jumincho.cvpass.di.AppContainer
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +33,3 @@ class CvPassApplication : Application() {
         const val TAG = "CvPass"
     }
 }
-
-/** The running app's [AppContainer], for `viewModelFactory { initializer { … } }` blocks. */
-val CreationExtras.appContainer: AppContainer
-    get() = (checkNotNull(this[APPLICATION_KEY]) as CvPassApplication).container

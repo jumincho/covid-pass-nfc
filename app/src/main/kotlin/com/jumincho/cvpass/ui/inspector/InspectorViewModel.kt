@@ -4,12 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.jumincho.cvpass.appContainer
 import com.jumincho.cvpass.core.business.BusinessNumber
 import com.jumincho.cvpass.core.checkin.CheckIn
 import com.jumincho.cvpass.core.checkin.CheckInRepository
 import com.jumincho.cvpass.core.inspector.InspectorGate
 import com.jumincho.cvpass.core.venue.VenueStore
+import com.jumincho.cvpass.di.appContainer
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

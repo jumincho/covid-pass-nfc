@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.jumincho.cvpass.appContainer
 import com.jumincho.cvpass.core.checkin.CheckInResult
 import com.jumincho.cvpass.core.checkin.CheckInService
 import com.jumincho.cvpass.core.pass.PassStatus
@@ -12,6 +11,7 @@ import com.jumincho.cvpass.core.venue.VenueTag
 import com.jumincho.cvpass.core.venue.VenueTagCodec
 import com.jumincho.cvpass.core.venue.VenueTagDecoding
 import com.jumincho.cvpass.core.visitor.VisitorStore
+import com.jumincho.cvpass.di.appContainer
 import com.jumincho.cvpass.nfc.TagReadResult
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow

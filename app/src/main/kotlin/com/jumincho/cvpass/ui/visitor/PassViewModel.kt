@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.jumincho.cvpass.appContainer
 import com.jumincho.cvpass.core.checkin.Visit
 import com.jumincho.cvpass.core.checkin.VisitHistory
 import com.jumincho.cvpass.core.pass.CertificateParser
@@ -13,11 +12,11 @@ import com.jumincho.cvpass.core.pass.PassStatus
 import com.jumincho.cvpass.core.pass.VerifiedPass
 import com.jumincho.cvpass.core.visitor.VisitorProfile
 import com.jumincho.cvpass.core.visitor.VisitorStore
+import com.jumincho.cvpass.di.appContainer
 import com.jumincho.cvpass.ocr.CertificateTextReader
-import com.jumincho.cvpass.ui.STOP_TIMEOUT_MILLIS
+import com.jumincho.cvpass.ui.WhileUiSubscribed
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -76,7 +75,7 @@ class PassViewModel(
                 recentVisits = recent,
                 verification = verifying,
             )
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS), PassUiState())
+        }.stateIn(viewModelScope, WhileUiSubscribed, PassUiState())
 
     /** Reads and evaluates the certificate image at [imageUri]. */
     fun onCertificatePicked(imageUri: String) {

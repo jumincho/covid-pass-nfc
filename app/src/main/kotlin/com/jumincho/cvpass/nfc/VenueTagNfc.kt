@@ -30,17 +30,22 @@ sealed interface TagReadResult {
 
 /** Result of writing a venue to a tag. */
 sealed interface TagWriteResult {
+    /** The venue is on the tag. */
     data object Written : TagWriteResult
 
+    /** The tag is locked against writing. */
     data object ReadOnly : TagWriteResult
 
+    /** The message needs [requiredBytes] but the tag holds only [capacityBytes]. */
     data class TooSmall(val requiredBytes: Int, val capacityBytes: Int) : TagWriteResult
 
     /** The tag supports neither NDEF nor NDEF formatting. */
     data object Unsupported : TagWriteResult
 
+    /** The tag moved out of range before writing finished. */
     data object TagLost : TagWriteResult
 
+    /** Writing failed for another reason, such as an I/O or formatting error. */
     data object Failed : TagWriteResult
 }
 

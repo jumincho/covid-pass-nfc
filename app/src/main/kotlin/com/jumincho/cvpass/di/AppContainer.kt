@@ -1,10 +1,11 @@
-package com.jumincho.cvpass
+package com.jumincho.cvpass.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.CreationExtras
+import com.jumincho.cvpass.CvPassApplication
 import com.jumincho.cvpass.core.business.NtsBusinessRegistry
 import com.jumincho.cvpass.core.checkin.CheckInRepository
 import com.jumincho.cvpass.core.checkin.CheckInService
@@ -13,6 +14,7 @@ import com.jumincho.cvpass.core.inspector.InspectorGate
 import com.jumincho.cvpass.core.venue.VenueRegistrar
 import com.jumincho.cvpass.core.venue.VenueStore
 import com.jumincho.cvpass.core.visitor.VisitorStore
+import com.jumincho.cvpass.data.StorageBackend
 import com.jumincho.cvpass.data.firebase.FirestoreCheckInRepository
 import com.jumincho.cvpass.data.firebase.firestoreFor
 import com.jumincho.cvpass.data.local.CvPassDatabase
@@ -20,20 +22,12 @@ import com.jumincho.cvpass.data.local.LocalCheckInRepository
 import com.jumincho.cvpass.data.local.LocalVisitHistory
 import com.jumincho.cvpass.data.preferences.PreferencesVenueStore
 import com.jumincho.cvpass.data.preferences.PreferencesVisitorStore
+import com.jumincho.cvpass.data.preferences.createPreferencesDataStore
 import com.jumincho.cvpass.ocr.CertificateTextReader
 import com.jumincho.cvpass.ocr.MlKitCertificateTextReader
 import okhttp3.OkHttpClient
 import java.time.Clock
 import java.util.concurrent.TimeUnit
-
-/** Where the venue-side visitor log lives. */
-sealed interface StorageBackend {
-    /** A Room database on this device, so the whole flow works on one phone. */
-    data object Device : StorageBackend
-
-    /** Cloud Firestore in the given project. */
-    data class Firestore(val projectId: String) : StorageBackend
-}
 
 /** Manual dependency injection: one instance per process, owned by [CvPassApplication]. */
 class AppContainer(context: Context, val config: AppConfig) {
@@ -48,9 +42,7 @@ class AppContainer(context: Context, val config: AppConfig) {
 
     private val database: CvPassDatabase by lazy { CvPassDatabase.build(appContext) }
 
-    private val preferences: DataStore<Preferences> by lazy {
-        PreferenceDataStoreFactory.create { appContext.preferencesDataStoreFile("cvpass") }
-    }
+    private val preferences: DataStore<Preferences> by lazy { createPreferencesDataStore(appContext) }
 
     private val httpClient: OkHttpClient by lazy {
         OkHttpClient.Builder().callTimeout(20, TimeUnit.SECONDS).build()
@@ -81,3 +73,7 @@ class AppContainer(context: Context, val config: AppConfig) {
 
     val certificateReader: CertificateTextReader by lazy { MlKitCertificateTextReader(appContext) }
 }
+
+/** The running app's [AppContainer], for `viewModelFactory { initializer { … } }` blocks. */
+val CreationExtras.appContainer: AppContainer
+    get() = (checkNotNull(this[APPLICATION_KEY]) as CvPassApplication).container

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.jumincho.cvpass.appContainer
 import com.jumincho.cvpass.core.business.BusinessNumber
 import com.jumincho.cvpass.core.business.BusinessRegistration
 import com.jumincho.cvpass.core.business.BusinessVerification
@@ -13,6 +12,7 @@ import com.jumincho.cvpass.core.venue.VenueRegistrationResult
 import com.jumincho.cvpass.core.venue.VenueStore
 import com.jumincho.cvpass.core.venue.VenueTag
 import com.jumincho.cvpass.core.visitor.PersonName
+import com.jumincho.cvpass.di.appContainer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

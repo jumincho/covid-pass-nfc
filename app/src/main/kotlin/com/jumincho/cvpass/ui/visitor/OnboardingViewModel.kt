@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.jumincho.cvpass.appContainer
 import com.jumincho.cvpass.core.visitor.PersonName
 import com.jumincho.cvpass.core.visitor.PhoneNumber
 import com.jumincho.cvpass.core.visitor.VisitorProfile
 import com.jumincho.cvpass.core.visitor.VisitorStore
+import com.jumincho.cvpass.di.appContainer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

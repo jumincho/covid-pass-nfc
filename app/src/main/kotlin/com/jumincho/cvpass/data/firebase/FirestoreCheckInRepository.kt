@@ -1,13 +1,9 @@
 package com.jumincho.cvpass.data.firebase
 
-import android.content.Context
-import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.jumincho.cvpass.FirebaseSettings
 import com.jumincho.cvpass.core.business.BusinessNumber
 import com.jumincho.cvpass.core.checkin.CheckIn
 import com.jumincho.cvpass.core.checkin.CheckInRepository
@@ -91,24 +87,3 @@ class FirestoreCheckInRepository(
         const val WRITE_ACK_TIMEOUT_MILLIS = 5_000L
     }
 }
-
-/**
- * Initialises Firebase from [settings] instead of a `google-services.json` file and returns
- * its Firestore instance. The app uses a named [FirebaseApp] so that it never conflicts
- * with Firebase's automatic initialisation.
- */
-fun firestoreFor(context: Context, settings: FirebaseSettings): FirebaseFirestore {
-    val app = FirebaseApp.getApps(context).firstOrNull { it.name == FIREBASE_APP_NAME }
-        ?: FirebaseApp.initializeApp(
-            context,
-            FirebaseOptions.Builder()
-                .setProjectId(settings.projectId)
-                .setApplicationId(settings.applicationId)
-                .setApiKey(settings.apiKey)
-                .build(),
-            FIREBASE_APP_NAME,
-        )
-    return FirebaseFirestore.getInstance(app)
-}
-
-private const val FIREBASE_APP_NAME = "cvpass"

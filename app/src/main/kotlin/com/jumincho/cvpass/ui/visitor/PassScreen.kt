@@ -163,7 +163,7 @@ private fun PassCard(profile: VisitorProfile, pass: VerifiedPass?, status: PassS
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(24.dp))
-            .background(Brush.linearGradient(listOf(BrandColors.Navy, PassCardEnd)))
+            .background(Brush.linearGradient(listOf(BrandColors.Navy, BrandColors.DeepBlue)))
             .semantics(mergeDescendants = true) { }
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -330,9 +330,6 @@ private fun RecentVisits(visits: List<Visit>) {
         }
     }
 }
-
-/** End colour of the pass card gradient: the light theme's primary blue. */
-private val PassCardEnd = Color(0xFF2B57D6)
 
 @Preview(name = "Pass", showBackground = true)
 @Composable

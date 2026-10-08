@@ -4,15 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.jumincho.cvpass.appContainer
 import com.jumincho.cvpass.core.pass.PassPolicy
 import com.jumincho.cvpass.core.pass.PassStatus
 import com.jumincho.cvpass.core.venue.RegisteredVenue
 import com.jumincho.cvpass.core.venue.VenueStore
 import com.jumincho.cvpass.core.visitor.VisitorProfile
 import com.jumincho.cvpass.core.visitor.VisitorStore
-import com.jumincho.cvpass.ui.STOP_TIMEOUT_MILLIS
-import kotlinx.coroutines.flow.SharingStarted
+import com.jumincho.cvpass.di.appContainer
+import com.jumincho.cvpass.ui.WhileUiSubscribed
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -39,7 +38,7 @@ class HomeViewModel(visitorStore: VisitorStore, venueStore: VenueStore, clock: C
                 passStatus = pass?.let { PassPolicy.evaluate(it.record, LocalDate.now(clock)) },
                 venue = venue,
             )
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MILLIS), HomeUiState())
+        }.stateIn(viewModelScope, WhileUiSubscribed, HomeUiState())
 
     companion object {
         val Factory = viewModelFactory {
