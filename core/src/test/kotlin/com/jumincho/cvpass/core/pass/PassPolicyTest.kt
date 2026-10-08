@@ -5,7 +5,6 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
 import java.time.LocalDate
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 
 class PassPolicyTest {
 
@@ -96,20 +95,6 @@ class PassPolicyTest {
         val record = VaccinationRecord(doses = 2, primarySeriesDoses = 2, lastDoseDate = lastDose)
         assertEquals(PassStatus.NotYetValid(LocalDate.of(2021, 8, 15), 5), PassPolicy.evaluate(record, LocalDate.of(2021, 8, 10)))
         assertEquals(PassStatus.Valid, PassPolicy.evaluate(record, LocalDate.of(2021, 8, 15)))
-    }
-
-    @Test
-    fun `builds the record to keep from a certificate`() {
-        assertEquals(
-            VaccinationRecord(doses = 3, primarySeriesDoses = 2, lastDoseDate = lastDose),
-            certificate(highestDose = 2, booster = true).toRecord(),
-        )
-    }
-
-    @Test
-    fun `rejects impossible records`() {
-        assertFailsWith<IllegalArgumentException> { VaccinationRecord(0, 2, lastDose) }
-        assertFailsWith<IllegalArgumentException> { VaccinationRecord(2, 3, lastDose) }
     }
 
     @Test

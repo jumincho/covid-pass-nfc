@@ -95,7 +95,7 @@ class NtsBusinessRegistry(
         /** Production endpoint of the public-data portal. */
         val DEFAULT_BASE_URL: HttpUrl = "https://api.odcloud.kr/".toHttpUrl()
 
-        internal const val VALIDATE_PATH = "api/nts-businessman/v1/validate"
+        private const val VALIDATE_PATH = "api/nts-businessman/v1/validate"
 
         private const val VALID = "01"
         private const val NOT_MATCHED = "02"

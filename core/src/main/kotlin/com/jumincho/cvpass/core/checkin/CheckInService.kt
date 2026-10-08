@@ -26,7 +26,7 @@ sealed interface CheckInResult {
     /** Entry needs a valid pass; [status] is the current one, or `null` if none was verified. */
     data class PassRequired(val status: PassStatus?) : CheckInResult
 
-    /** Storing the check-in failed. */
+    /** Reading the visitor's history or storing the check-in failed. */
     data class Failed(val cause: Exception) : CheckInResult
 }
 

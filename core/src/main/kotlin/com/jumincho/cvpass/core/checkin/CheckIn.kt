@@ -14,10 +14,3 @@ data class CheckIn(
     val phone: PhoneNumber,
     val checkedInAt: Instant,
 )
-
-/** An entry in the visitor's own history of places they checked in to. */
-data class Visit(
-    val venueId: BusinessNumber,
-    val venueName: String,
-    val visitedAt: Instant,
-)

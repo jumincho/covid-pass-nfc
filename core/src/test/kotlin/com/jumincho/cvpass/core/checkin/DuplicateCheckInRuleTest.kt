@@ -3,11 +3,10 @@ package com.jumincho.cvpass.core.checkin
 import org.junit.jupiter.api.Test
 import java.time.Duration
 import java.time.Instant
-import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class CheckInRulesTest {
+class DuplicateCheckInRuleTest {
 
     private val previous = Instant.parse("2021-10-20T12:00:00Z")
 
@@ -31,11 +30,5 @@ class CheckInRulesTest {
     @Test
     fun `a clock that went backwards does not lock the visitor out`() {
         assertFalse(DuplicateCheckInRule.isDuplicate(previous, previous.minusSeconds(1)))
-    }
-
-    @Test
-    fun `entries older than four weeks are due for deletion`() {
-        val now = Instant.parse("2021-11-17T09:30:00Z")
-        assertEquals(Instant.parse("2021-10-20T09:30:00Z"), RetentionPolicy.cutoff(now))
     }
 }

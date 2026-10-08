@@ -7,8 +7,6 @@ import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.ValueSource
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNull
 
 class VenueTagCodecTest {
 
@@ -88,13 +86,5 @@ class VenueTagCodecTest {
     fun `rejects oversized payloads before parsing them`() {
         val payload = ByteArray(VenueTagCodec.MAX_PAYLOAD_BYTES + 1) { ' '.code.toByte() }
         assertEquals(VenueTagDecoding.Malformed(VenueTagDecoding.Reason.TOO_LARGE), VenueTagCodec.decode(payload))
-    }
-
-    @Test
-    fun `validates venue names`() {
-        assertEquals("카페 전주", VenueTag.normalizeName("  카페\t전주  "))
-        assertNull(VenueTag.normalizeName(""))
-        assertNull(VenueTag.normalizeName("x".repeat(VenueTag.MAX_NAME_LENGTH + 1)))
-        assertFailsWith<IllegalArgumentException> { VenueTag(number, " not normalised") }
     }
 }

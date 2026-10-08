@@ -62,6 +62,7 @@ class InMemoryCheckInRepository(private val zone: ZoneId) : CheckInRepository {
         }
 
     override suspend fun deleteOlderThan(cutoff: Instant) {
+        failure?.let { throw it }
         state.value = state.value.filterNot { it.checkedInAt.isBefore(cutoff) }
     }
 
